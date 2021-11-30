@@ -10,6 +10,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import java.util.List;
 
@@ -31,6 +32,18 @@ public class CarService {
         public Car saveCar(Car car) {
                 log.info("Saving new car {} {} to the database", car.getBrand(), car.getModel());
                 return carRepo.save(car);
+        }
+
+        public Car editCar(Car car) {
+                Car carEdited = carRepo.findById(car.getId()).orElseThrow(() -> new EntityNotFoundException());
+                log.info("Edition car with id {}", car.getId());
+                carEdited.setRegistrationNr(car.getRegistrationNr());
+                carEdited.setBrand(car.getBrand());
+                carEdited.setModel(car.getModel());
+                carEdited.setIsAvailable(car.getIsAvailable());
+                carEdited.setCarPackage(car.getCarPackage());
+                carEdited.setCarParameters(car.getCarParameters());
+                return carRepo.save(carEdited);
         }
 
         public void deleteCar(Long id) {
@@ -56,6 +69,14 @@ public class CarService {
         public CarPackage saveCarPackage(CarPackage carPackage) {
                 log.info("Saving new package {} to the database", carPackage.getPackageName());
                 return carPackageRepo.save(carPackage);
+        }
+
+        public CarPackage editCarPackage(CarPackage carPackage) {
+                CarPackage carPackageEdited = carPackageRepo.findById(carPackage.getId()).orElseThrow(() -> new EntityNotFoundException(carPackage.getPackageName()));
+                log.info("Edition car package with id {}", carPackage.getId());
+                carPackageEdited.setPackageName(carPackage.getPackageName());
+                carPackageEdited.setPricePerHour(carPackage.getPricePerHour());
+                return carPackageRepo.save(carPackageEdited);
         }
 
         public void deleteCarPackage(Long id) {
