@@ -6,6 +6,8 @@ import com.example1.carrental.repo.CarPackageRepo;
 import com.example1.carrental.repo.CarRepo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -17,6 +19,7 @@ import java.util.List;
 @Slf4j
 public class CarService {
 
+        public static final int PAGE_SIZE = 10;
         private final CarRepo carRepo;
         private final CarPackageRepo carPackageRepo;
 
@@ -35,9 +38,14 @@ public class CarService {
                 carRepo.deleteById(id);
         }
 
-        public List<Car> getAllCars() {
+        public List<Car> getAllCars(Integer page, Sort.Direction sort) {
                 log.info("Fetching all cars");
-                return carRepo.findAll();
+                return carRepo.findCars(PageRequest.of(page, PAGE_SIZE, Sort.by(sort, "id")));
+        }
+
+        public List<Car> getAvailableCars(Integer page, Sort.Direction sort) {
+                log.info("Fetching available cars");
+                return carRepo.findAvailableCars(PageRequest.of(page, PAGE_SIZE, Sort.by(sort, "id")));
         }
 
         public List<CarPackage> getCarPackages() {
@@ -46,7 +54,7 @@ public class CarService {
         }
 
         public CarPackage saveCarPackage(CarPackage carPackage) {
-                log.info("Saving new package ({}) to the database", carPackage.getPackageName());
+                log.info("Saving new package {} to the database", carPackage.getPackageName());
                 return carPackageRepo.save(carPackage);
         }
 
