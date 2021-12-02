@@ -2,6 +2,9 @@ package com.example1.carrental.service;
 
 import com.example1.carrental.domain.Role;
 import com.example1.carrental.domain.User;
+import com.example1.carrental.dto.UserEditDto;
+import com.example1.carrental.dto.UserSaveDto;
+import com.example1.carrental.mapper.UserSaveDtoMapper;
 import com.example1.carrental.repo.RoleRepo;
 import com.example1.carrental.repo.UserRepo;
 import lombok.RequiredArgsConstructor;
@@ -40,9 +43,23 @@ public class UserService implements UserDetailsService {
                 return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), authorities);
         }
 
-        public User saveUser(User user) {
-                log.info("Saving new user {} to the database", user.getUsername());
-                return userRepo.save(user);
+        public UserSaveDto saveUser(UserSaveDto userSaveDto) {
+                log.info("Saving new user {} to the database", userSaveDto.getUsername());
+                userSaveDto.setPassword(userSaveDto.getPassword());
+                userRepo.save(UserSaveDtoMapper.mapToUser(userSaveDto));
+                return userSaveDto;
+        }
+
+        public User editUser(UserEditDto userEditDto) {
+                User userEdited = userRepo.findById(userEditDto.getId()).orElseThrow(() -> new UsernameNotFoundException(userEditDto.getUsername()));
+                log.info("Edition user with id {}", userEditDto.getId());
+                userEdited.setFirstName(userEditDto.getFirstName());
+                userEdited.setLastName(userEditDto.getLastName());
+                userEdited.setUsername(userEditDto.getUsername());
+                userEdited.setPassword(userEditDto.getPassword());
+                userEdited.setEmail(userEditDto.getEmail());
+                userEdited.setPhone(userEditDto.getPhone());
+                return userRepo.save(userEdited);
         }
 
         public void deleteUser(Long id) {
