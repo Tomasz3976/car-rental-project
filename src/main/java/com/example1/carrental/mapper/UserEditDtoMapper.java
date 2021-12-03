@@ -17,4 +17,16 @@ public class UserEditDtoMapper {
                                 user.getEmail(), user.getPhone())).collect(Collectors.toList());
         }
 
+        public static UserEditDto mapUserToUserDto(User user) {
+                return UserEditDto.builder()
+                        .id(user.getId())
+                        .firstName(user.getFirstName())
+                        .lastName(user.getLastName())
+                        .username(user.getUsername())
+                        .password(user.getPassword())
+                        .email(user.getEmail())
+                        .phone(user.getPhone())
+                        .build();
+        }
+
 }

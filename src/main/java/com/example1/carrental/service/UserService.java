@@ -74,11 +74,6 @@ public class UserService implements UserDetailsService {
                 return roleRepo.save(role);
         }
 
-        public void deleteRole(Long id) {
-                log.info("Deleting role with id {}", id);
-                roleRepo.deleteById(id);
-        }
-
         public User addRoleToUser(String username, String roleName) {
                 log.info("Adding role {} to user {}", roleName, username);
                 User user = userRepo.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException(username));
