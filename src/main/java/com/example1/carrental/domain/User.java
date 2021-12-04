@@ -40,6 +40,9 @@ public class User {
         @Column(name = "phone", nullable = false, length = 9)
         private Integer phone;
 
+        @OneToOne(cascade = CascadeType.ALL)
+        private CreditCard creditCard;
+
         @ManyToMany(cascade = CascadeType.ALL)
         private Collection<Role> roles = new ArrayList<>();
 

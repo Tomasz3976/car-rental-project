@@ -1,5 +1,6 @@
 package com.example1.carrental.service;
 
+import com.example1.carrental.domain.CreditCard;
 import com.example1.carrental.domain.Role;
 import com.example1.carrental.domain.User;
 import com.example1.carrental.dto.UserEditDto;
@@ -87,6 +88,19 @@ public class UserService implements UserDetailsService {
                 User user = userRepo.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException(username));
                 Role role = roleRepo.findByName(roleName).orElseThrow(() -> new EntityNotFoundException(roleName));
                 user.getRoles().remove(role);
+        }
+
+        public User addCreditCardToUser(String username, CreditCard creditCard) {
+                log.info("Adding credit card to user {}", username);
+                User user = userRepo.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException(username));
+                user.setCreditCard(creditCard);
+                return userRepo.save(user);
+        }
+
+        public void deleteUserCreditCard(String username) {
+                log.info("Deleting credit card of user {}", username);
+                User user = userRepo.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException(username));
+                user.setCreditCard(null);
         }
 
         public List<User> getUsers() {

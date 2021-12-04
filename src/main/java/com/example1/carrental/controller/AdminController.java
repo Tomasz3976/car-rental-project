@@ -1,9 +1,6 @@
 package com.example1.carrental.controller;
 
-import com.example1.carrental.domain.Car;
-import com.example1.carrental.domain.CarPackage;
-import com.example1.carrental.domain.Role;
-import com.example1.carrental.domain.User;
+import com.example1.carrental.domain.*;
 import com.example1.carrental.dto.UserEditDto;
 import com.example1.carrental.dto.UserSaveDto;
 import com.example1.carrental.mapper.UserEditDtoMapper;
@@ -55,6 +52,16 @@ public class AdminController {
         @DeleteMapping("/users/roles")
         public void deleteUserRole(@RequestParam String username, @RequestParam String roleName) {
                 userService.deleteUserRole(username, roleName);
+        }
+
+        @PutMapping("/users/creditCards")
+        public User addCreditCardToUser(@RequestParam String username, @RequestBody CreditCard creditCard) {
+                return userService.addCreditCardToUser(username, creditCard);
+        }
+
+        @DeleteMapping("/users/creditCards")
+        public void deleteUserCreditCard(@RequestParam String username) {
+                userService.deleteUserCreditCard(username);
         }
 
         @GetMapping("/cars/{id}")
