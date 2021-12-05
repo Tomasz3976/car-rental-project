@@ -23,7 +23,24 @@ public class CarRentalApplication {
 		SpringApplication.run(CarRentalApplication.class, args);
 	}
 
+	@Bean
+	CommandLineRunner run(CarService carService, UserService userService) {
+		return args -> {
+			userService.saveRole(new Role(null, "ROLE_USER"));
+			userService.saveRole(new Role(null, "ROLE_MANAGER"));
+			userService.saveRole(new Role(null, "ROLE_ADMIN"));
 
+			userService.saveUser(new UserSaveDto("Tomasz", "Nowak", "tomeczek", "pomidor", "tomasz@gmail.com", 555444777));
+			userService.addRoleToUser("tomeczek", "ROLE_USER");
+			userService.addRoleToUser("tomeczek", "ROLE_MANAGER");
+			userService.addRoleToUser("tomeczek", "ROLE_ADMIN");
+
+
+			CarPackage luxury = new CarPackage(null, "Luxury", 500);
+			CarParameters carParameters = new CarParameters(1L, FuelType.PETROL, GearBoxType.AUTOMATIC, 5, 5, true);
+			carService.saveCar(new Car(1L, "RSA54633", "Audi", "S8", true, luxury, carParameters));
+		};
+	}
 
 	}
 
