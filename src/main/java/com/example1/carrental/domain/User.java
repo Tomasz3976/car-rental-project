@@ -43,7 +43,7 @@ public class User {
         @OneToOne(cascade = CascadeType.ALL)
         private CreditCard creditCard;
 
-        @ManyToMany(cascade = CascadeType.ALL)
+        @ManyToMany(cascade = CascadeType.PERSIST)
         private Collection<Role> roles = new ArrayList<>();
 
 }
