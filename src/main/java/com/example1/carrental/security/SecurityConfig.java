@@ -47,7 +47,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         .and().httpBasic().authenticationEntryPoint(swaggerAuthenticationEntryPoint());
                 http.authorizeRequests().antMatchers("/login").permitAll()
                         .antMatchers("/admin/**").hasAnyAuthority("ROLE_ADMIN")
-                        .antMatchers("/cars/**").hasAnyAuthority("ROLE_USER")
+                        .antMatchers("/cars/**", "/registration/**").hasAnyAuthority("ROLE_USER")
                         .anyRequest().authenticated()
                         .and().logout().logoutSuccessUrl("/login");
                 http.addFilter(new CustomAuthenticationFilter(authenticationManagerBean()));
