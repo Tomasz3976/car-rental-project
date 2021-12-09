@@ -45,7 +45,7 @@ class CarServiceTest {
 
         @Test
         void itShouldSaveCar() {
-                Car car = new Car(null, "RBR15364", "Audi", "A4", true, null, null);
+                Car car = Car.builder().brand("Audi").model("A4").build();
 
                 when(carRepo.save(car)).thenReturn(car);
 
@@ -57,7 +57,7 @@ class CarServiceTest {
 
         @Test
         void itShouldCheckIfCarIsEdited() {
-                Car car = new Car(2L, "GDA46573", "Fiat", "Panda", false, null, null);
+                Car car = Car.builder().id(2L).build();
 
                 when(carRepo.findById(2L)).thenReturn(Optional.of(car));
                 when(carRepo.save(car)).thenReturn(car);
@@ -68,8 +68,7 @@ class CarServiceTest {
 
         @Test
         void itShouldDeleteCar() {
-                Car car = new Car(4L, "WSR87688", "Chevrolet", "Camaro", true, null, null);
-
+                Car car = Car.builder().id(4L).build();
                 doNothing().when(carRepo).deleteById(4L);
 
                 carService.deleteCar(4L);
@@ -79,9 +78,9 @@ class CarServiceTest {
 
         @Test
         void itShouldReturnAllCars() {
-                Car car = new Car(null, "GHF88493", "Bentley", "Continental", true, null, null);
-                Car car2 = new Car(null, "HGF78493", "Lamborghini", "Huracan", true, null, null);
-                Car car3 = new Car(null, "KMN74837", "Volkswagen", "Golf", false, null, null);
+                Car car = Car.builder().registrationNr("GHF88493").brand("Bentley").model("Continental").isAvailable(true).build();
+                Car car2 = Car.builder().registrationNr("HGF78493").brand("Lamborghini").model("Huracan").isAvailable(true).build();
+                Car car3 = Car.builder().registrationNr("KMN74837").brand("Volkswagen").model("Golf").isAvailable(false).build();
                 ArrayList<Car> cars = new ArrayList<>();
                 cars.add(car);
                 cars.add(car2);
@@ -95,11 +94,11 @@ class CarServiceTest {
 
         @Test
         void itShouldReturnAvailableCars() {
-                Car available1 = new Car(null, "OPE74639", "Audi", "80", true, null, null);
-                Car notAvailable1 = new Car(null, "JKD94839", "Rolls-Royce", "Phantom", false, null, null);
-                Car available2 = new Car(null, "HJD85743", "Fait", "Stilo", true, null, null);
-                Car available3 = new Car(null, "ASD84754", "Toyota", "Yaris", true, null, null);
-                Car notAvailable2 = new Car(null, "OIU95840", "Opel", "Insignia", false, null, null);
+                Car available1 = Car.builder().registrationNr("OPE74639").brand("Audi").model("80").isAvailable(true).build();
+                Car notAvailable1 = Car.builder().registrationNr("JKD94839").brand("Rolls-Royce").model("Phantom").isAvailable(false).build();
+                Car available2 = Car.builder().registrationNr("HJD85743").brand("Fiat").model("Stilo").isAvailable(true).build();
+                Car available3 = Car.builder().registrationNr("ASD84754").brand("Toyota").model("Yaris").isAvailable(true).build();
+                Car notAvailable2 = Car.builder().registrationNr("OIU95840").brand("Opel").model("Insignia").isAvailable(false).build();
                 ArrayList<Car> cars = new ArrayList<>();
                 cars.add(available1);
                 cars.add(notAvailable1);
@@ -128,7 +127,7 @@ class CarServiceTest {
 
         @Test
         void itShouldSaveCarPackage() {
-                CarPackage luxury = new CarPackage(null, "Luxury", 500);
+                CarPackage luxury = CarPackage.builder().packageName("Luxury").pricePerHour(500).build();
 
                 when(carPackageRepo.save(luxury)).thenReturn(luxury);
 
@@ -139,7 +138,7 @@ class CarServiceTest {
 
         @Test
         void itShouldCheckIfPackageIsEdited() {
-                CarPackage sporty = new CarPackage(5L, "Sporty", 300);
+                CarPackage sporty = CarPackage.builder().id(5L).packageName("Sporty").pricePerHour(300).build();
 
                 when(carPackageRepo.findById(5L)).thenReturn(Optional.of(sporty));
                 when(carPackageRepo.save(sporty)).thenReturn(sporty);
@@ -149,8 +148,8 @@ class CarServiceTest {
 
         @Test
         void itShouldDeleteCarPackage() {
-                CarPackage ordinary = new CarPackage(3L, "Ordinary", 100);
-                CarPackage awesome = new CarPackage(4L, "Awesome", 800);
+                CarPackage ordinary = CarPackage.builder().id(3L).packageName("Ordinary").pricePerHour(100).build();
+                CarPackage awesome = CarPackage.builder().id(4L).packageName("Awesome").pricePerHour(800).build();
 
                 doNothing().when(carPackageRepo).deleteById(3L);
                 doNothing().when(carPackageRepo).deleteById(4L);

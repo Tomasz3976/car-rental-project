@@ -39,8 +39,7 @@ class RegistrationServiceTest {
 
         @Test
         void itShouldCheckIfPasswordIsIncorrect() {
-                UserSaveDto userSaveDto = new UserSaveDto("John", "Happy", "JohnBDP685",
-                        "simplepassword123", "JohnG56@02.pl", 876000444);
+                UserSaveDto userSaveDto = UserSaveDto.builder().username("JohnBDP685").password("johnapple56").build();
 
                 when(userRepo.findByUsername(userSaveDto.getUsername())).thenReturn(Optional.empty());
 
@@ -59,8 +58,8 @@ class RegistrationServiceTest {
 
         @Test
         void itShouldAddCreditCardToUser() {
-                User user = new User(null, "Mickey", "Rourke", "MickeyBoss5", "CatDogBird43", "GoodGuy99@gmail.com", 750443812, null, new ArrayList<>());
-                CreditCardDto creditCardDto = new CreditCardDto(8888943300781111L, 7, 2022, 933);
+                User user = User.builder().firstName("Mickey").lastName("Rourke").build();
+                CreditCardDto creditCardDto = CreditCardDto.builder().cardNumber(8888943300781111L).build();
 
                 when(loggedInUser.getUser()).thenReturn(user);
 
@@ -71,8 +70,9 @@ class RegistrationServiceTest {
 
         @Test
         void itShouldMakeMoneyTransfer() {
-                User user = new User(null, "Mickey", "Rourke", "MickeyBoss5", "CatDogBird43", "GoodGuy99@gmail.com", 750443812, null, new ArrayList<>());
-                CreditCard creditCard = new CreditCard(null, 8888943300781111L, 7, 2022, 933, 0L);
+                User user = User.builder().firstName("Richard").lastName("Hammond").build();
+                CreditCard creditCard = CreditCard.builder().accountBalance(0L).build();
+
                 user.setCreditCard(creditCard);
 
                 when(loggedInUser.getUser()).thenReturn(user);

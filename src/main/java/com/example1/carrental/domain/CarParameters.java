@@ -4,6 +4,7 @@ import com.example1.carrental.constant.FuelType;
 import com.example1.carrental.constant.GearBoxType;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -13,6 +14,7 @@ import javax.persistence.*;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Table(name = "CarParameters")
 public class CarParameters {
 
