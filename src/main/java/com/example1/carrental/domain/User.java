@@ -1,9 +1,11 @@
 package com.example1.carrental.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -42,6 +44,11 @@ public class User {
 
         @OneToOne(cascade = CascadeType.ALL)
         private CreditCard creditCard;
+
+        @JsonIgnore
+        @Nullable
+        @OneToOne(cascade = CascadeType.ALL)
+        private AccessKey accessKey;
 
         @ManyToMany(cascade = CascadeType.PERSIST)
         private Collection<Role> roles = new ArrayList<>();

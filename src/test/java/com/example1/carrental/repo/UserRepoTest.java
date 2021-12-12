@@ -22,10 +22,10 @@ class UserRepoTest {
 
         @BeforeEach
         void setUp() {
-                User user = new User(null, "Lawrence", "Okolie", "lawrence123", "apples678", "lpf56@gmail.com", 888777621, null, new ArrayList<>());
-                User user2 = new User(null, "Anthony", "Joshua", "joshua456", "eddiehearn678", "gbjosh@onet.pl", 465999222, null, new ArrayList<>());
-                User user3 = new User(null, "Tyson", "Fury", "gypsyKing", "deeoonthai", "gypsyKing655@gmail.com", 765555444, null, new ArrayList<>());
-                User user4 = new User(null, "Saul", "Alvarez", "canelo", "prettyBoy", "Goose@gmail.com", 908764220, null, new ArrayList<>());
+                User user = new User(null, "Lawrence", "Okolie", "lawrence123", "apples678", "lpf56@gmail.com", 888777621, null, null, new ArrayList<>());
+                User user2 = new User(null, "Anthony", "Joshua", "joshua456", "eddiehearn678", "gbjosh@onet.pl", 465999222, null, null, new ArrayList<>());
+                User user3 = new User(null, "Tyson", "Fury", "gypsyKing", "deeoonthai", "gypsyKing655@gmail.com", 765555444, null, null, new ArrayList<>());
+                User user4 = new User(null, "Saul", "Alvarez", "canelo", "prettyBoy", "Goose@gmail.com", 908764220, null, null, new ArrayList<>());
                 underTest.save(user);
                 underTest.save(user2);
                 underTest.save(user3);

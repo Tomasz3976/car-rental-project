@@ -14,7 +14,6 @@ import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.ArrayList;
 import java.util.Optional;
 
 import java.util.regex.Matcher;
@@ -81,4 +80,5 @@ class RegistrationServiceTest {
 
                 assertThat(user.getCreditCard().getAccountBalance()).isEqualTo(700L);
         }
+
 }
