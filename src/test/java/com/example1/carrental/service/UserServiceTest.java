@@ -16,6 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -148,7 +149,7 @@ class UserServiceTest {
                 User user1 = User.builder().firstName("Adrian").lastName("Puchacki").username("puchatek").password("jabsgsdgsf4").email("Legaidf7@gmail.com").phone(675842233).build();
                 User user2 = User.builder().firstName("Krzysztof").lastName("Bluza").username("hdjdhus").password("nfhusg8dsh4").email("Ohyufugd@gmail.com").phone(945769043).build();
                 User user3 = User.builder().firstName("Grzegorz").lastName("Kante").username("skokl").password("gtdft47HHs8hu").email("Oktesasd7@gmail.com").phone(234665789).build();
-                ArrayList<User> users = new ArrayList<>();
+                List<User> users = new ArrayList<>();
                 users.add(user1);
                 users.add(user2);
                 users.add(user3);

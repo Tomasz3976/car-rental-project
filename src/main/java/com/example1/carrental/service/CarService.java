@@ -2,8 +2,10 @@ package com.example1.carrental.service;
 
 import com.example1.carrental.domain.Car;
 import com.example1.carrental.domain.CarPackage;
+import com.example1.carrental.domain.PlacedOrder;
 import com.example1.carrental.repo.CarPackageRepo;
 import com.example1.carrental.repo.CarRepo;
+import com.example1.carrental.repo.OrderRepo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
@@ -23,6 +25,7 @@ public class CarService {
         public static final int PAGE_SIZE = 10;
         private final CarRepo carRepo;
         private final CarPackageRepo carPackageRepo;
+        private final OrderRepo orderRepo;
 
         public Car getCar(Long id) {
                 log.info("Fetching car with id {}", id);
@@ -82,6 +85,11 @@ public class CarService {
         public void deleteCarPackage(Long id) {
                 log.info("Deleting car package with id {}", id);
                 carPackageRepo.deleteById(id);
+        }
+
+        public List<PlacedOrder> getOrders() {
+                log.info("Fetching all orders");
+                return orderRepo.findAll();
         }
 
 }
