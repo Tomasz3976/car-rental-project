@@ -99,4 +99,9 @@ public class AdminController {
                 carService.deleteCarPackage(id);
         }
 
+        @GetMapping("/cars/orders")
+        public List<PlacedOrder> getOrders() {
+                return carService.getOrders();
+        }
+
 }

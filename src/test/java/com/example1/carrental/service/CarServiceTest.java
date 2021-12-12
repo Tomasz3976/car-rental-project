@@ -2,8 +2,10 @@ package com.example1.carrental.service;
 
 import com.example1.carrental.domain.Car;
 import com.example1.carrental.domain.CarPackage;
+import com.example1.carrental.domain.PlacedOrder;
 import com.example1.carrental.repo.CarPackageRepo;
 import com.example1.carrental.repo.CarRepo;
+import com.example1.carrental.repo.OrderRepo;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -30,6 +32,9 @@ class CarServiceTest {
 
         @Mock
         CarPackageRepo carPackageRepo;
+
+        @Mock
+        OrderRepo orderRepo;
 
         @InjectMocks
         CarService carService;
@@ -80,7 +85,7 @@ class CarServiceTest {
                 Car car = Car.builder().registrationNr("GHF88493").brand("Bentley").model("Continental").isAvailable(true).build();
                 Car car2 = Car.builder().registrationNr("HGF78493").brand("Lamborghini").model("Huracan").isAvailable(true).build();
                 Car car3 = Car.builder().registrationNr("KMN74837").brand("Volkswagen").model("Golf").isAvailable(false).build();
-                ArrayList<Car> cars = new ArrayList<>();
+                List<Car> cars = new ArrayList<>();
                 cars.add(car);
                 cars.add(car2);
                 cars.add(car3);
@@ -98,7 +103,7 @@ class CarServiceTest {
                 Car available2 = Car.builder().registrationNr("HJD85743").brand("Fiat").model("Stilo").isAvailable(true).build();
                 Car available3 = Car.builder().registrationNr("ASD84754").brand("Toyota").model("Yaris").isAvailable(true).build();
                 Car notAvailable2 = Car.builder().registrationNr("OIU95840").brand("Opel").model("Insignia").isAvailable(false).build();
-                ArrayList<Car> cars = new ArrayList<>();
+                List<Car> cars = new ArrayList<>();
                 cars.add(available1);
                 cars.add(notAvailable1);
                 cars.add(available2);
@@ -160,4 +165,20 @@ class CarServiceTest {
                 verify(carPackageRepo, times(1)).deleteById(4L);
         }
 
+        @Test
+        void itShouldReturnAllOrders() {
+                PlacedOrder order = PlacedOrder.builder().userId(1L).carId(5L).brand("Ford").model("Mustang").build();
+                PlacedOrder order2 = PlacedOrder.builder().userId(37L).carId(15L).brand("Fiat").model("Brava").build();
+                PlacedOrder order3 = PlacedOrder.builder().userId(9L).carId(7L).brand("Daewoo").model("Matiz").build();
+                PlacedOrder order4 = PlacedOrder.builder().userId(4L).carId(9L).brand("Porsche").model("Cayman").build();
+                List<PlacedOrder> orders = new ArrayList<>();
+                orders.add(order);
+                orders.add(order2);
+                orders.add(order3);
+                orders.add(order4);
+
+                when(orderRepo.findAll()).thenReturn(orders);
+
+                assertThat(carService.getOrders()).isEqualTo(orders);
+        }
 }
