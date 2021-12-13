@@ -3,6 +3,9 @@ package com.example1.carrental.service;
 import com.example1.carrental.domain.Car;
 import com.example1.carrental.domain.PlacedOrder;
 import com.example1.carrental.domain.User;
+import com.example1.carrental.exception.InvalidPackageException;
+import com.example1.carrental.exception.NoAccessKeyException;
+import com.example1.carrental.exception.UnavailableCarException;
 import com.example1.carrental.repo.CarRepo;
 import com.example1.carrental.repo.OrderRepo;
 import com.example1.carrental.security.LoggedInUser;
@@ -29,26 +32,27 @@ public class DeliveryService {
         private final LoggedInUser loggedInUser;
 
 
-        public Car pickUpTheCar(Long carId) throws AccessDeniedException {
+        public Car pickUpTheCar(Long carId) {
 
-                Car car = carRepo.findById(carId).orElseThrow(() -> new EntityNotFoundException());
+                Car car = carRepo.findById(carId)
+                        .orElseThrow(() -> new EntityNotFoundException("Car With This ID Does Not Exists!"));
                 User user = loggedInUser.getUser();
 
                 if(user.getAccessKey() == null) {
 
-                        throw new AccessDeniedException("youCannotRentACarWithoutAccessKey");
+                        throw new NoAccessKeyException("You Do Not Have An Access Key!");
 
                 }
 
                 else if(!user.getAccessKey().getCarPackage().equals(car.getCarPackage().getPackageName())) {
 
-                        throw new IllegalArgumentException("youCannotPickCarFromThisPackage!");
+                        throw new InvalidPackageException("You Cannot Pick Car From This Package!");
 
                 }
 
                 else if(!car.getIsAvailable()) {
 
-                        throw new IllegalCallerException("carAlreadyReserved!");
+                        throw new UnavailableCarException("This Car Is Already Reserved!");
 
                 } else {
 

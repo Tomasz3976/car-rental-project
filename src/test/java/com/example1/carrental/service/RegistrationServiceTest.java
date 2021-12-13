@@ -4,6 +4,9 @@ import com.example1.carrental.domain.CreditCard;
 import com.example1.carrental.domain.User;
 import com.example1.carrental.dto.CreditCardDto;
 import com.example1.carrental.dto.UserSaveDto;
+import com.example1.carrental.exception.ExistsUserException;
+import com.example1.carrental.exception.NoCreditCardException;
+import com.example1.carrental.exception.WeakPasswordException;
 import com.example1.carrental.repo.UserRepo;
 import com.example1.carrental.security.LoggedInUser;
 import org.junit.jupiter.api.Test;
@@ -37,25 +40,6 @@ class RegistrationServiceTest {
 
 
         @Test
-        void itShouldCheckIfPasswordIsIncorrect() {
-                UserSaveDto userSaveDto = UserSaveDto.builder().username("JohnBDP685").password("johnapple56").build();
-
-                when(userRepo.findByUsername(userSaveDto.getUsername())).thenReturn(Optional.empty());
-
-
-                try (MockedStatic<PasswordValidator> mockedStatic = Mockito.mockStatic(PasswordValidator.class)) {
-
-                        String regex = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d]{8,}$";
-                        Pattern p = Pattern.compile(regex);
-                        Matcher m = p.matcher(userSaveDto.getPassword());
-
-                        when(PasswordValidator.matcher(userSaveDto.getPassword())).thenReturn(m);
-                        registrationService.registerUser(userSaveDto);
-                        assertFalse(m.find());
-                }
-        }
-
-        @Test
         void itShouldAddCreditCardToUser() {
                 User user = User.builder().firstName("Mickey").lastName("Rourke").build();
                 CreditCardDto creditCardDto = CreditCardDto.builder().cardNumber(8888943300781111L).build();
@@ -79,6 +63,44 @@ class RegistrationServiceTest {
                 registrationService.moneyTransfer(700L);
 
                 assertThat(user.getCreditCard().getAccountBalance()).isEqualTo(700L);
+        }
+
+        @Test
+        void itShouldThrowExistsUserException() {
+                UserSaveDto userSaveDto = UserSaveDto.builder().username("GreenJohn78").build();
+                User user = User.builder().username("GreenJohn78").build();
+
+                when(userRepo.findByUsername(userSaveDto.getUsername())).thenReturn(Optional.of(user));
+
+                assertThrows(ExistsUserException.class, () -> registrationService.registerUser(userSaveDto));
+        }
+
+        @Test
+        void itShouldThrowWeakPasswordException() {
+                UserSaveDto userSaveDto = UserSaveDto.builder().username("JohnBDP685").password("johnapple56").build();
+
+                when(userRepo.findByUsername(userSaveDto.getUsername())).thenReturn(Optional.empty());
+
+
+                try (MockedStatic<PasswordValidator> mockedStatic = Mockito.mockStatic(PasswordValidator.class)) {
+
+                        String regex = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d]{8,}$";
+                        Pattern p = Pattern.compile(regex);
+                        Matcher m = p.matcher(userSaveDto.getPassword());
+
+                        when(PasswordValidator.matcher(userSaveDto.getPassword())).thenReturn(m);
+
+                        assertThrows(WeakPasswordException.class, () -> registrationService.registerUser(userSaveDto));
+                }
+        }
+
+        @Test
+        void itShouldThrowNoCreditCardException() {
+                User user = User.builder().username("MeekMill765").creditCard(null).build();
+
+                when(loggedInUser.getUser()).thenReturn(user);
+
+                assertThrows(NoCreditCardException.class, () -> registrationService.moneyTransfer(400L));
         }
 
 }

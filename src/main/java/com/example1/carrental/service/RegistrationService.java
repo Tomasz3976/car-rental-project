@@ -4,6 +4,9 @@ import com.example1.carrental.domain.CreditCard;
 import com.example1.carrental.domain.User;
 import com.example1.carrental.dto.CreditCardDto;
 import com.example1.carrental.dto.UserSaveDto;
+import com.example1.carrental.exception.ExistsUserException;
+import com.example1.carrental.exception.NoCreditCardException;
+import com.example1.carrental.exception.WeakPasswordException;
 import com.example1.carrental.mapper.UserSaveDtoMapper;
 import com.example1.carrental.repo.UserRepo;
 import com.example1.carrental.security.LoggedInUser;
@@ -32,12 +35,13 @@ public class RegistrationService {
 
                 if (userRepo.findByUsername(userSaveDto.getUsername()).isPresent()) {
 
-                        log.info("User with the given name already exists!");
+                        throw new ExistsUserException("User With Given Username Already Exists!");
 
                 } else if (!PasswordValidator.matcher(userSaveDto.getPassword()).matches()) {
 
-                        log.info("Password must contains minimum eight characters," +
-                                " at least one uppercase letter, one lowercase letter and one number!");
+                        throw new WeakPasswordException("Password Must Contains Minimum Eight Characters," +
+                                " At Least One Uppercase Letter, One Lowercase Letter And One Number!");
+
                 } else {
 
                         log.info("Registration of new user");
@@ -64,7 +68,7 @@ public class RegistrationService {
 
                 if(user.getCreditCard() == null) {
 
-                        log.info("First you need to add a credit card!");
+                        throw new NoCreditCardException("You Do Not Have Credit Card!");
 
                 } else {
 

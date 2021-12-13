@@ -29,7 +29,8 @@ public class CarService {
 
         public Car getCar(Long id) {
                 log.info("Fetching car with id {}", id);
-                return carRepo.findById(id).orElseThrow();
+                return carRepo.findById(id)
+                        .orElseThrow(() -> new EntityNotFoundException("Car With This ID Does Not Exists!"));
         }
 
         public Car saveCar(Car car) {
@@ -38,7 +39,8 @@ public class CarService {
         }
 
         public Car editCar(Car car) {
-                Car carEdited = carRepo.findById(car.getId()).orElseThrow(() -> new EntityNotFoundException());
+                Car carEdited = carRepo.findById(car.getId())
+                        .orElseThrow(() -> new EntityNotFoundException("This Car Does Not Exists!"));
                 log.info("Edition car with id {}", car.getId());
                 carEdited.setRegistrationNr(car.getRegistrationNr());
                 carEdited.setBrand(car.getBrand());
@@ -75,7 +77,8 @@ public class CarService {
         }
 
         public CarPackage editCarPackage(CarPackage carPackage) {
-                CarPackage carPackageEdited = carPackageRepo.findById(carPackage.getId()).orElseThrow(() -> new EntityNotFoundException(carPackage.getPackageName()));
+                CarPackage carPackageEdited = carPackageRepo
+                        .findById(carPackage.getId()).orElseThrow(() -> new EntityNotFoundException("This Package Does Not Exists!"));
                 log.info("Edition car package with id {}", carPackage.getId());
                 carPackageEdited.setPackageName(carPackage.getPackageName());
                 carPackageEdited.setPricePerHour(carPackage.getPricePerHour());

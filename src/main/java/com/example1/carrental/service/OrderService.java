@@ -3,6 +3,8 @@ package com.example1.carrental.service;
 import com.example1.carrental.domain.AccessKey;
 import com.example1.carrental.domain.CarPackage;
 import com.example1.carrental.domain.User;
+import com.example1.carrental.exception.InsufficientFundsException;
+import com.example1.carrental.exception.NoCreditCardException;
 import com.example1.carrental.repo.CarPackageRepo;
 import com.example1.carrental.security.LoggedInUser;
 import lombok.RequiredArgsConstructor;
@@ -25,15 +27,23 @@ public class OrderService {
         public AccessKey submitOrder(String carPackage, Integer hours) {
 
                 User user = loggedInUser.getUser();
+
+                if(user.getCreditCard() == null) {
+
+                        throw new NoCreditCardException("You Do Not Have Credit Card!");
+
+                }
+
                 Long money = user.getCreditCard().getAccountBalance();
-                CarPackage carPackageSearch = carPackageRepo.findByPackageName(carPackage).orElseThrow(() -> new EntityNotFoundException(carPackage));
+                CarPackage carPackageSearch = carPackageRepo.findByPackageName(carPackage)
+                        .orElseThrow(() -> new EntityNotFoundException("This Package Does Not Exists!"));
                 Integer price = carPackageSearch.getPricePerHour();
 
                 AccessKey accessKey;
 
                 if (money < (long) price * hours) {
 
-                        throw new RuntimeException("notEnoughMoney!");
+                        throw new InsufficientFundsException("You do not have enough money!");
 
                 } else {
 
