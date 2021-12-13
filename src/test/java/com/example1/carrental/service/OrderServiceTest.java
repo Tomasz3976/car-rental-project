@@ -4,6 +4,8 @@ import com.example1.carrental.domain.AccessKey;
 import com.example1.carrental.domain.CarPackage;
 import com.example1.carrental.domain.CreditCard;
 import com.example1.carrental.domain.User;
+import com.example1.carrental.exception.InsufficientFundsException;
+import com.example1.carrental.exception.NoCreditCardException;
 import com.example1.carrental.repo.CarPackageRepo;
 import com.example1.carrental.security.LoggedInUser;
 import org.junit.jupiter.api.Test;
@@ -63,7 +65,16 @@ class OrderServiceTest {
         }
 
         @Test
-        void itShouldThrowNotEnoughMoneyException() {
+        void itShouldThrowNoCreditCardException() {
+                User user = User.builder().username("Tomasz").creditCard(null).build();
+
+                when(loggedInUser.getUser()).thenReturn(user);
+
+                assertThrows(NoCreditCardException.class, () -> orderService.submitOrder("Ordinary", 2));
+        }
+
+        @Test
+        void itShouldThrowInsufficientFundsException() {
                 CreditCard card = CreditCard.builder().accountBalance(600L).build();
                 User user = User.builder().username("Radoslaw").creditCard(card).build();
                 CarPackage luxury = CarPackage.builder().packageName("Luxury").pricePerHour(500).build();
@@ -71,7 +82,7 @@ class OrderServiceTest {
                 when(loggedInUser.getUser()).thenReturn(user);
                 when(carPackageRepo.findByPackageName("Luxury")).thenReturn(Optional.of(luxury));
 
-                assertThrows(RuntimeException.class, () -> orderService.submitOrder("Luxury", 2));
+                assertThrows(InsufficientFundsException.class, () -> orderService.submitOrder("Luxury", 2));
         }
 
 }

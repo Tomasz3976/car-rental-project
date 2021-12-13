@@ -1,6 +1,9 @@
 package com.example1.carrental.service;
 
 import com.example1.carrental.domain.*;
+import com.example1.carrental.exception.InvalidPackageException;
+import com.example1.carrental.exception.NoAccessKeyException;
+import com.example1.carrental.exception.UnavailableCarException;
 import com.example1.carrental.repo.CarRepo;
 
 import com.example1.carrental.repo.OrderRepo;
@@ -58,18 +61,18 @@ class DeliveryServiceTest {
         }
 
         @Test
-        void itShouldThrowAccessDeniedException() {
+        void itShouldThrowNoAccessKeyException() {
                 Car car = Car.builder().id(1L).brand("Honda").model("Civic").build();
                 User user = User.builder().username("MaxVerstappen").accessKey(null).build();
 
                 when(carRepo.findById(1L)).thenReturn(Optional.of(car));
                 when(loggedInUser.getUser()).thenReturn(user);
 
-                assertThrows(AccessDeniedException.class, () -> deliveryService.pickUpTheCar(1L));
+                assertThrows(NoAccessKeyException.class, () -> deliveryService.pickUpTheCar(1L));
         }
 
         @Test
-        void itShouldThrowIllegalArgumentException() {
+        void itShouldThrowInvalidPackageException() {
                 CarPackage carPackage = CarPackage.builder().packageName("Sporty").pricePerHour(300).build();
                 Car car = Car.builder().id(3L).brand("Fiat").model("Multipla").carPackage(carPackage).build();
                 AccessKey accessKey = AccessKey.builder().carPackage("Luxury").hours(3).build();
@@ -78,11 +81,11 @@ class DeliveryServiceTest {
                 when(carRepo.findById(3L)).thenReturn(Optional.of(car));
                 when(loggedInUser.getUser()).thenReturn(user);
 
-                assertThrows(IllegalArgumentException.class, () -> deliveryService.pickUpTheCar(3L));
+                assertThrows(InvalidPackageException.class, () -> deliveryService.pickUpTheCar(3L));
         }
 
         @Test
-        void itShouldThrowIllegalCallerException() {
+        void itShouldThrowUnavailableCarException() {
                 CarPackage carPackage = CarPackage.builder().packageName("Ordinary").pricePerHour(100).build();
                 Car car = Car.builder().id(2L).brand("Peugeot").model("206").isAvailable(false).carPackage(carPackage).build();
                 AccessKey accessKey = AccessKey.builder().carPackage("Ordinary").hours(7).build();
@@ -91,7 +94,7 @@ class DeliveryServiceTest {
                 when(carRepo.findById(2L)).thenReturn(Optional.of(car));
                 when(loggedInUser.getUser()).thenReturn(user);
 
-                assertThrows(IllegalCallerException.class, () -> deliveryService.pickUpTheCar(2L));
+                assertThrows(UnavailableCarException.class, () -> deliveryService.pickUpTheCar(2L));
         }
 
 }

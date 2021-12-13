@@ -16,7 +16,7 @@ public class DeliveryController {
         private final DeliveryService deliveryService;
 
         @PostMapping("/delivery")
-        public Car pickUpTheCar(@RequestParam Long carId) throws AccessDeniedException {
+        public Car pickUpTheCar(@RequestParam Long carId) {
                 return deliveryService.pickUpTheCar(carId);
         }
 
