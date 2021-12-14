@@ -19,7 +19,6 @@ public class CarPackage {
 
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
-        @JsonIgnore
         @Column(name = "id", unique = true, nullable = false)
         private Long id;
 
