@@ -14,6 +14,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,26 +25,34 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 class CarRepoTest {
 
         @Autowired
-        private CarRepo underTest;
+        private CarRepo carRepo;
+
+        @Autowired
+        private CarPackageRepo carPackageRepo;
 
         @BeforeEach
         void setUp() {
-                Car car = new Car(null, "RSA45362", "Audi", "S6", true, new CarPackage(null, "SPORTY", 300),
+                CarPackage sporty = new CarPackage(null, "Sporty", 300, new ArrayList<>());
+
+                carPackageRepo.save(sporty);
+
+                Car car = new Car(null, "RSA45362", "Audi", "S6", true, sporty,
                         new CarParameters(null, FuelType.PETROL, GearBoxType.AUTOMATIC, 5, 5, true));
-                underTest.save(car);
+                        sporty.getCars().add(car);
+                carRepo.save(car);
         }
 
         @AfterEach
         void tearDown() {
-                underTest.deleteAll();
+                carRepo.deleteAll();
         }
 
         @Test
         void itShouldReturnAvailableCars() {
 
-                List<Car> cars = underTest.findCars(PageRequest.of(1, 20, Sort.by(Sort.Direction.ASC, "id")));
+                List<Car> cars = carRepo.findCars(PageRequest.of(1, 20, Sort.by(Sort.Direction.ASC, "id")));
 
-                assertThat(underTest.findAvailableCars(PageRequest.of(1, 20, Sort.by(Sort.Direction.ASC, "id"))))
+                assertThat(carRepo.findAvailableCars(PageRequest.of(1, 20, Sort.by(Sort.Direction.ASC, "id"))))
                         .isEqualTo(cars.stream()
                                 .filter(car -> car.getIsAvailable().equals(true))
                                 .collect(Collectors.toList()));

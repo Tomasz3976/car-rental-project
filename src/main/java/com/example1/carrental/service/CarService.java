@@ -3,6 +3,9 @@ package com.example1.carrental.service;
 import com.example1.carrental.domain.Car;
 import com.example1.carrental.domain.CarPackage;
 import com.example1.carrental.domain.PlacedOrder;
+import com.example1.carrental.dto.CarEditDto;
+import com.example1.carrental.dto.CarPackageDto;
+import com.example1.carrental.dto.CarSaveDto;
 import com.example1.carrental.repo.CarPackageRepo;
 import com.example1.carrental.repo.CarRepo;
 import com.example1.carrental.repo.OrderRepo;
@@ -15,6 +18,9 @@ import org.springframework.stereotype.Service;
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import java.util.List;
+
+import static com.example1.carrental.mapper.CarPackageDtoMapper.mapToCarPackage;
+import static com.example1.carrental.mapper.CarSaveDtoMapper.mapToCar;
 
 @Service
 @RequiredArgsConstructor
@@ -33,21 +39,24 @@ public class CarService {
                         .orElseThrow(() -> new EntityNotFoundException("Car With This ID Does Not Exists!"));
         }
 
-        public Car saveCar(Car car) {
-                log.info("Saving new car {} {} to the database", car.getBrand(), car.getModel());
+        public Car saveCar(CarSaveDto carSaveDto, String packageName) {
+                CarPackage carPackage = carPackageRepo.findByPackageName(packageName)
+                        .orElseThrow(() -> new EntityNotFoundException("This Package Does Not Exists!"));
+                log.info("Saving new car {} {} to the database", carSaveDto.getBrand(), carSaveDto.getModel());
+                Car car = mapToCar(carSaveDto);
+                car.setCarPackage(carPackage);
                 return carRepo.save(car);
         }
 
-        public Car editCar(Car car) {
-                Car carEdited = carRepo.findById(car.getId())
+        public Car editCar(CarEditDto carEditDto) {
+                Car carEdited = carRepo.findById(carEditDto.getId())
                         .orElseThrow(() -> new EntityNotFoundException("This Car Does Not Exists!"));
-                log.info("Edition car with id {}", car.getId());
-                carEdited.setRegistrationNr(car.getRegistrationNr());
-                carEdited.setBrand(car.getBrand());
-                carEdited.setModel(car.getModel());
-                carEdited.setIsAvailable(car.getIsAvailable());
-                carEdited.setCarPackage(car.getCarPackage());
-                carEdited.setCarParameters(car.getCarParameters());
+                log.info("Edition car with id {}", carEditDto.getId());
+                carEdited.setRegistrationNr(carEditDto.getRegistrationNr());
+                carEdited.setBrand(carEditDto.getBrand());
+                carEdited.setModel(carEditDto.getModel());
+                carEdited.setIsAvailable(carEditDto.getIsAvailable());
+                carEdited.setCarParameters(carEditDto.getCarParameters());
                 return carRepo.save(carEdited);
         }
 
@@ -71,18 +80,9 @@ public class CarService {
                 return carPackageRepo.findAll();
         }
 
-        public CarPackage saveCarPackage(CarPackage carPackage) {
-                log.info("Saving new package {} to the database", carPackage.getPackageName());
-                return carPackageRepo.save(carPackage);
-        }
-
-        public CarPackage editCarPackage(CarPackage carPackage) {
-                CarPackage carPackageEdited = carPackageRepo
-                        .findById(carPackage.getId()).orElseThrow(() -> new EntityNotFoundException("This Package Does Not Exists!"));
-                log.info("Edition car package with id {}", carPackage.getId());
-                carPackageEdited.setPackageName(carPackage.getPackageName());
-                carPackageEdited.setPricePerHour(carPackage.getPricePerHour());
-                return carPackageRepo.save(carPackageEdited);
+        public CarPackage saveCarPackage(CarPackageDto carPackageDto) {
+                log.info("Saving new package {} to the database", carPackageDto.getPackageName());
+                return carPackageRepo.save(mapToCarPackage(carPackageDto));
         }
 
         public void deleteCarPackage(Long id) {

@@ -1,8 +1,7 @@
 package com.example1.carrental.controller;
 
 import com.example1.carrental.domain.*;
-import com.example1.carrental.dto.UserEditDto;
-import com.example1.carrental.dto.UserSaveDto;
+import com.example1.carrental.dto.*;
 import com.example1.carrental.mapper.UserEditDtoMapper;
 import com.example1.carrental.service.CarService;
 import com.example1.carrental.service.UserService;
@@ -70,13 +69,13 @@ public class AdminController {
         }
 
         @PostMapping("/cars")
-        public Car saveCar(@RequestBody Car car) {
-                return carService.saveCar(car);
+        public Car saveCar(@RequestBody CarSaveDto carSaveDto, @RequestParam String packageName) {
+                return carService.saveCar(carSaveDto, packageName);
         }
 
         @PutMapping("/cars")
-        public Car editCar(@RequestBody Car car) {
-                return carService.editCar(car);
+        public Car editCar(@RequestBody CarEditDto carEditDto) {
+                return carService.editCar(carEditDto);
         }
 
         @DeleteMapping("/cars/{id}")
@@ -85,13 +84,8 @@ public class AdminController {
         }
 
         @PostMapping("/cars/packages")
-        public CarPackage saveCarPackage(CarPackage carPackage) {
-                return carService.saveCarPackage(carPackage);
-        }
-
-        @PutMapping("/cars/packages")
-        public CarPackage editCarPackage(CarPackage carPackage) {
-                return carService.editCarPackage(carPackage);
+        public CarPackage saveCarPackage(CarPackageDto carPackageDto) {
+                return carService.saveCarPackage(carPackageDto);
         }
 
         @DeleteMapping("/cars/packages/{id}")

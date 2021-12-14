@@ -32,7 +32,8 @@ public class Car {
         @Column(name = "isAvailable", nullable = false)
         private Boolean isAvailable;
 
-        @ManyToOne(cascade = CascadeType.ALL)
+        @ManyToOne(fetch = FetchType.EAGER)
+        @JoinColumn(name = "car_package_id", referencedColumnName = "id", nullable = false)
         private CarPackage carPackage;
 
         @OneToOne(cascade = CascadeType.ALL)
