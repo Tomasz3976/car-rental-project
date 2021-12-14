@@ -3,6 +3,12 @@ package com.example1.carrental.service;
 import com.example1.carrental.domain.Car;
 import com.example1.carrental.domain.CarPackage;
 import com.example1.carrental.domain.PlacedOrder;
+import com.example1.carrental.dto.CarEditDto;
+import com.example1.carrental.dto.CarPackageDto;
+import com.example1.carrental.dto.CarSaveDto;
+import com.example1.carrental.mapper.CarPackageDtoMapper;
+import com.example1.carrental.mapper.CarSaveDtoMapper;
+import com.example1.carrental.mapper.UserSaveDtoMapper;
 import com.example1.carrental.repo.CarPackageRepo;
 import com.example1.carrental.repo.CarRepo;
 import com.example1.carrental.repo.OrderRepo;
@@ -10,6 +16,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -49,25 +57,36 @@ class CarServiceTest {
 
         @Test
         void itShouldSaveCar() {
-                Car car = Car.builder().brand("Audi").model("A4").build();
+                CarSaveDto carSaveDto = CarSaveDto.builder().brand("Audi").model("A4").build();
+                String packageName = "Luxury";
+                CarPackage luxury = CarPackage.builder().packageName("Luxury").build();
 
-                when(carRepo.save(car)).thenReturn(car);
+                when(carPackageRepo.findByPackageName("Luxury")).thenReturn(Optional.of(luxury));
 
-                Car saved = carService.saveCar(car);
+                try (MockedStatic<CarSaveDtoMapper> mockedStatic = Mockito.mockStatic(CarSaveDtoMapper.class)) {
 
-                assertThat(car.getModel()).isEqualTo(saved.getModel());
-                assertThat(car.getBrand()).isEqualTo(saved.getBrand());
+                        Car mapped = Car.builder().brand("Audi").model("A4").build();
+
+                        when(CarSaveDtoMapper.mapToCar(carSaveDto)).thenReturn(mapped);
+
+                        when(carRepo.save(mapped)).thenReturn(mapped);
+
+                        Car saved = carService.saveCar(carSaveDto, packageName);
+
+                        assertThat(carSaveDto.getModel()).isEqualTo(saved.getModel());
+                        assertThat(carSaveDto.getBrand()).isEqualTo(saved.getBrand());
+                }
         }
 
         @Test
         void itShouldCheckIfCarIsEdited() {
+                CarEditDto carEditDto = CarEditDto.builder().id(2L).build();
                 Car car = Car.builder().id(2L).build();
 
                 when(carRepo.findById(2L)).thenReturn(Optional.of(car));
                 when(carRepo.save(car)).thenReturn(car);
 
-                assertThat(carService.editCar(car)).isEqualTo(car);
-
+                assertThat(carService.editCar(carEditDto)).isEqualTo(car);
         }
 
         @Test
@@ -131,23 +150,20 @@ class CarServiceTest {
 
         @Test
         void itShouldSaveCarPackage() {
-                CarPackage luxury = CarPackage.builder().packageName("Luxury").pricePerHour(500).build();
+                CarPackageDto luxury = CarPackageDto.builder().packageName("Luxury").pricePerHour(500).build();
 
-                when(carPackageRepo.save(luxury)).thenReturn(luxury);
+                try (MockedStatic<CarPackageDtoMapper> mockedStatic = Mockito.mockStatic(CarPackageDtoMapper.class)) {
 
-                CarPackage saved = carService.saveCarPackage(luxury);
+                        CarPackage mapped = CarPackage.builder().packageName("Luxury").pricePerHour(500).build();
 
-                assertThat(saved).isEqualTo(luxury);
-        }
+                        when(CarPackageDtoMapper.mapToCarPackage(luxury)).thenReturn(mapped);
 
-        @Test
-        void itShouldCheckIfPackageIsEdited() {
-                CarPackage sporty = CarPackage.builder().id(5L).packageName("Sporty").pricePerHour(300).build();
+                        when(carPackageRepo.save(mapped)).thenReturn(mapped);
 
-                when(carPackageRepo.findById(5L)).thenReturn(Optional.of(sporty));
-                when(carPackageRepo.save(sporty)).thenReturn(sporty);
+                        CarPackage saved = carService.saveCarPackage(luxury);
 
-                assertThat(carService.editCarPackage(sporty)).isEqualTo(sporty);
+                        assertThat(saved).isEqualTo(mapped);
+                }
         }
 
         @Test

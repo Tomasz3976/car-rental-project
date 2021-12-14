@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -21,9 +22,9 @@ class CarPackageRepoTest {
 
         @BeforeEach
         void setUp() {
-                CarPackage sporty = new CarPackage(null, "Sporty", 300);
-                CarPackage luxury = new CarPackage(null, "Luxury", 500);
-                CarPackage ordinary = new CarPackage(null, "Ordinary", 100);
+                CarPackage sporty = new CarPackage(null, "Sporty", 300, new ArrayList<>());
+                CarPackage luxury = new CarPackage(null, "Luxury", 500, new ArrayList<>());
+                CarPackage ordinary = new CarPackage(null, "Ordinary", 100, new ArrayList<>());
                 underTest.save(sporty);
                 underTest.save(luxury);
                 underTest.save(ordinary);

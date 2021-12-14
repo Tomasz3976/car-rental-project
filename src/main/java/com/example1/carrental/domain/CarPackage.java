@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Data
@@ -27,5 +28,9 @@ public class CarPackage {
 
         @Column(name = "pricePerHour", nullable = false)
         private Integer pricePerHour;
+
+        @JsonIgnore
+        @OneToMany(fetch = FetchType.LAZY, mappedBy = "carPackage", cascade = CascadeType.ALL)
+        private List<Car> cars;
 
 }
