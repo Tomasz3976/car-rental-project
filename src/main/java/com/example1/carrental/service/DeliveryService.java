@@ -6,6 +6,7 @@ import com.example1.carrental.domain.User;
 import com.example1.carrental.exception.InvalidPackageException;
 import com.example1.carrental.exception.NoAccessKeyException;
 import com.example1.carrental.exception.UnavailableCarException;
+import com.example1.carrental.repo.AccessKeyRepo;
 import com.example1.carrental.repo.CarRepo;
 import com.example1.carrental.repo.OrderRepo;
 import com.example1.carrental.security.LoggedInUser;
@@ -29,6 +30,7 @@ public class DeliveryService {
         public static final Long ID = null;
         private final CarRepo carRepo;
         private final OrderRepo orderRepo;
+        private final AccessKeyRepo accessKeyRepo;
         private final LoggedInUser loggedInUser;
 
 
@@ -52,10 +54,12 @@ public class DeliveryService {
 
                 else if(!car.getIsAvailable()) {
 
-                        throw new UnavailableCarException("This Car Is Already Reserved!");
+                        throw new UnavailableCarException("This Car Is Not Available!");
 
                 } else {
 
+
+                        accessKeyRepo.delete(user.getAccessKey());
                         car.setIsAvailable(false);
                         LocalDateTime start = LocalDateTime.now();
                         LocalDateTime end = LocalDateTime.now().plusHours(user.getAccessKey().getHours());

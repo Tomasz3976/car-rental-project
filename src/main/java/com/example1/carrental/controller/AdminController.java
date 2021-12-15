@@ -54,8 +54,8 @@ public class AdminController {
         }
 
         @PutMapping("/users/creditCards")
-        public User addCreditCardToUser(@RequestParam String username, @RequestBody CreditCard creditCard) {
-                return userService.addCreditCardToUser(username, creditCard);
+        public User addCreditCardToUser(@RequestParam String username, @RequestBody CreditCardDto creditCardDto) {
+                return userService.addCreditCardToUser(username, creditCardDto);
         }
 
         @DeleteMapping("/users/creditCards")

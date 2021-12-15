@@ -3,9 +3,11 @@ package com.example1.carrental.service;
 import com.example1.carrental.domain.CreditCard;
 import com.example1.carrental.domain.Role;
 import com.example1.carrental.domain.User;
+import com.example1.carrental.dto.CreditCardDto;
 import com.example1.carrental.dto.UserEditDto;
 import com.example1.carrental.dto.UserSaveDto;
 import com.example1.carrental.mapper.UserSaveDtoMapper;
+import com.example1.carrental.repo.CreditCardRepo;
 import com.example1.carrental.repo.RoleRepo;
 import com.example1.carrental.repo.UserRepo;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +25,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import static com.example1.carrental.mapper.CreditCardDtoMapper.mapToCreditCard;
+
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -31,6 +35,7 @@ public class UserService implements UserDetailsService {
 
         private final UserRepo userRepo;
         private final RoleRepo roleRepo;
+        private final CreditCardRepo creditCardRepo;
         private final PasswordEncoder passwordEncoder;
 
         @Override
@@ -96,11 +101,17 @@ public class UserService implements UserDetailsService {
                 user.getRoles().remove(role);
         }
 
-        public User addCreditCardToUser(String username, CreditCard creditCard) {
+        public User addCreditCardToUser(String username, CreditCardDto creditCardDto) {
                 log.info("Adding credit card to user {}", username);
                 User user = userRepo.findByUsername(username)
                         .orElseThrow(() -> new UsernameNotFoundException("This User Does Not Exists!"));
-                user.setCreditCard(creditCard);
+
+                if(user.getCreditCard() != null) {
+                        throw new IllegalCallerException("User Already Has Credit Card!");
+                }
+                CreditCard card = creditCardRepo.save(mapToCreditCard(creditCardDto));
+                user.setCreditCard(card);
+                card.setUser(user);
                 return userRepo.save(user);
         }
 
@@ -108,7 +119,7 @@ public class UserService implements UserDetailsService {
                 log.info("Deleting credit card of user {}", username);
                 User user = userRepo.findByUsername(username)
                         .orElseThrow(() -> new UsernameNotFoundException("This User Does Not Exists!"));
-                user.setCreditCard(null);
+                creditCardRepo.delete(user.getCreditCard());
         }
 
         public List<User> getUsers() {

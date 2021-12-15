@@ -2,8 +2,6 @@ package com.example1.carrental;
 
 import com.example1.carrental.constant.FuelType;
 import com.example1.carrental.constant.GearBoxType;
-import com.example1.carrental.domain.Car;
-import com.example1.carrental.domain.CarPackage;
 import com.example1.carrental.domain.CarParameters;
 import com.example1.carrental.domain.Role;
 import com.example1.carrental.dto.CarPackageDto;
@@ -16,8 +14,6 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
-
-import java.util.ArrayList;
 
 @SpringBootApplication
 @EnableSwagger2
@@ -45,6 +41,12 @@ public class CarRentalApplication {
 			CarParameters carParameters = new CarParameters(null, FuelType.PETROL, GearBoxType.AUTOMATIC, 5, 5, true);
 			CarSaveDto car = new CarSaveDto( "RSA54633", "Audi", "S8", true, carParameters);
 			carService.saveCar(car, "Luxury");
+			CarParameters carParameters2 = new CarParameters(null, FuelType.PETROL, GearBoxType.AUTOMATIC, 5, 5, true);
+			CarSaveDto car2 = new CarSaveDto( "WWA67549", "BMW", "M4", true, carParameters2);
+			carService.saveCar(car2, "Luxury");
+			CarParameters carParameters3 = new CarParameters(null, FuelType.PETROL, GearBoxType.AUTOMATIC, 5, 5, true);
+			CarSaveDto car3 = new CarSaveDto( "JHF76548", "Bentley", "Continental", true, carParameters3);
+			carService.saveCar(car3, "Luxury");
 
 		};
 	}

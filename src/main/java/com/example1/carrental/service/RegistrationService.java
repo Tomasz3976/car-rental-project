@@ -8,6 +8,7 @@ import com.example1.carrental.exception.ExistsUserException;
 import com.example1.carrental.exception.NoCreditCardException;
 import com.example1.carrental.exception.WeakPasswordException;
 import com.example1.carrental.mapper.UserSaveDtoMapper;
+import com.example1.carrental.repo.CreditCardRepo;
 import com.example1.carrental.repo.UserRepo;
 import com.example1.carrental.security.LoggedInUser;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +29,7 @@ public class RegistrationService {
         private final UserRepo userRepo;
         private final PasswordEncoder passwordEncoder;
         private final UserService userService;
+        private final CreditCardRepo creditCardRepo;
         private final LoggedInUser loggedInUser;
 
 
@@ -57,8 +59,12 @@ public class RegistrationService {
 
                 log.info("Adding credit card to user");
                 User user = loggedInUser.getUser();
-                CreditCard creditCard = mapToCreditCard(creditCardDto);
-                user.setCreditCard(creditCard);
+                if(user.getCreditCard() != null) {
+                        throw new IllegalCallerException("You Already Have Credit Card!");
+                }
+                CreditCard card = creditCardRepo.save(mapToCreditCard(creditCardDto));
+                user.setCreditCard(card);
+                card.setUser(user);
                 userRepo.save(user);
         }
 

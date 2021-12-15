@@ -42,12 +42,13 @@ public class User {
         @Column(name = "phone", nullable = false, length = 9)
         private Integer phone;
 
-        @OneToOne(cascade = CascadeType.ALL)
+        @JsonIgnore
+        @OneToOne(mappedBy = "user")
         private CreditCard creditCard;
 
         @JsonIgnore
         @Nullable
-        @OneToOne(cascade = CascadeType.ALL)
+        @OneToOne(mappedBy = "user")
         private AccessKey accessKey;
 
         @ManyToMany(cascade = CascadeType.PERSIST)

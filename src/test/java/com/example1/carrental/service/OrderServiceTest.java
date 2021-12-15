@@ -4,14 +4,19 @@ import com.example1.carrental.domain.AccessKey;
 import com.example1.carrental.domain.CarPackage;
 import com.example1.carrental.domain.CreditCard;
 import com.example1.carrental.domain.User;
+import com.example1.carrental.dto.AccessKeyDto;
 import com.example1.carrental.exception.InsufficientFundsException;
 import com.example1.carrental.exception.NoCreditCardException;
+import com.example1.carrental.mapper.AccessKeyDtoMapper;
+import com.example1.carrental.repo.AccessKeyRepo;
 import com.example1.carrental.repo.CarPackageRepo;
 import com.example1.carrental.security.LoggedInUser;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import javax.persistence.EntityNotFoundException;
@@ -29,6 +34,9 @@ class OrderServiceTest {
         CarPackageRepo carPackageRepo;
 
         @Mock
+        AccessKeyRepo accessKeyRepo;
+
+        @Mock
         LoggedInUser loggedInUser;
 
         @InjectMocks
@@ -36,21 +44,31 @@ class OrderServiceTest {
 
 
         @Test
-        void itShouldReturnAccessKey() {
+        void itShouldReturnAccessKeyDto() {
                 CreditCard card = CreditCard.builder().cardNumber(7755443334559900L)
                         .month(4).year(2023).CVV(278).accountBalance(1200L).build();
                 User user = User.builder().creditCard(card).build();
 
                 CarPackage build = CarPackage.builder().packageName("Luxury").pricePerHour(500).build();
 
+                AccessKey accessKey = AccessKey.builder().carPackage("Luxury").hours(2).build();
+
                 when(loggedInUser.getUser()).thenReturn(user);
                 when(carPackageRepo.findByPackageName("Luxury")).thenReturn(Optional.of(build));
+                when(accessKeyRepo.save(accessKey)).thenReturn(accessKey);
 
-                AccessKey accessKey = orderService.submitOrder("Luxury", 2);
+                try (MockedStatic<AccessKeyDtoMapper> mockedStatic = Mockito.mockStatic(AccessKeyDtoMapper.class)) {
 
-                assertThat(accessKey.getCarPackage()).isEqualTo("Luxury");
-                assertThat(accessKey.getHours()).isEqualTo(2);
-                assertThat(user.getCreditCard().getAccountBalance()).isEqualTo(200L);
+                        AccessKeyDto accessKeyDto = AccessKeyDto.builder().carPackage("Luxury").hours(2).build();
+
+                        when(AccessKeyDtoMapper.mapToAccessKeyDto(accessKey)).thenReturn(accessKeyDto);
+
+                        orderService.submitOrder("Luxury", 2);
+
+                        assertThat(accessKeyDto.getCarPackage()).isEqualTo("Luxury");
+                        assertThat(accessKeyDto.getHours()).isEqualTo(2);
+                        assertThat(user.getCreditCard().getAccountBalance()).isEqualTo(200L);
+                }
         }
 
         @Test

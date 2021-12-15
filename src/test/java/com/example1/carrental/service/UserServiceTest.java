@@ -3,15 +3,21 @@ package com.example1.carrental.service;
 import com.example1.carrental.domain.CreditCard;
 import com.example1.carrental.domain.Role;
 import com.example1.carrental.domain.User;
+import com.example1.carrental.dto.CreditCardDto;
 import com.example1.carrental.dto.UserSaveDto;
+import com.example1.carrental.mapper.CarSaveDtoMapper;
+import com.example1.carrental.mapper.CreditCardDtoMapper;
 import com.example1.carrental.mapper.UserEditDtoMapper;
 import com.example1.carrental.mapper.UserSaveDtoMapper;
+import com.example1.carrental.repo.CreditCardRepo;
 import com.example1.carrental.repo.RoleRepo;
 import com.example1.carrental.repo.UserRepo;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -30,6 +36,9 @@ class UserServiceTest {
 
         @Mock
         RoleRepo roleRepo;
+
+        @Mock
+        CreditCardRepo creditCardRepo;
 
         @Mock
         PasswordEncoder passwordEncoder;
@@ -119,29 +128,45 @@ class UserServiceTest {
         @Test
         void itShouldAddCreditCardToUser() {
                 User user = User.builder().firstName("Paul").lastName("Potato").username("niceUser45").build();
-                CreditCard creditCard = CreditCard.builder().cardNumber(6777654322220000L).build();
+                CreditCardDto creditCardDto = CreditCardDto.builder().cardNumber(7756443322118596L).build();
 
                 when(userRepo.findByUsername("niceUser45")).thenReturn(Optional.of(user));
-                when(userRepo.save(user)).thenReturn(user);
 
-                userService.addCreditCardToUser("niceUser45", creditCard);
+                try (MockedStatic<CreditCardDtoMapper> mockedStatic = Mockito.mockStatic(CreditCardDtoMapper.class)) {
 
-                assertThat(user.getCreditCard().getCardNumber()).isEqualTo(creditCard.getCardNumber());
+                        CreditCard creditCard = CreditCard.builder().cardNumber(7756443322118596L).build();
+
+                        when(CreditCardDtoMapper.mapToCreditCard(creditCardDto)).thenReturn(creditCard);
+                        when(creditCardRepo.save(creditCard)).thenReturn(creditCard);
+                        when(userRepo.save(user)).thenReturn(user);
+
+                        userService.addCreditCardToUser("niceUser45", creditCardDto);
+
+                        assertThat(user.getCreditCard().getCardNumber()).isEqualTo(creditCardDto.getCardNumber());
+                }
         }
 
         @Test
         void itShouldDeleteUserCreditCard() {
                 User user = User.builder().firstName("John").lastName("Octavian").username("Shell89").build();
-                CreditCard creditCard = CreditCard.builder().cardNumber(9999111122223333L).build();
+                CreditCardDto creditCardDto = CreditCardDto.builder().cardNumber(9999111122223333L).build();
 
                 when(userRepo.findByUsername("Shell89")).thenReturn(Optional.of(user));
-                when(userRepo.save(user)).thenReturn(user);
 
-                userService.addCreditCardToUser("Shell89", creditCard);
+                try (MockedStatic<CreditCardDtoMapper> mockedStatic = Mockito.mockStatic(CreditCardDtoMapper.class)) {
 
-                userService.deleteUserCreditCard("Shell89");
+                        CreditCard creditCard = CreditCard.builder().cardNumber(9999111122223333L).build();
 
-                assertThat(user.getCreditCard()).isNull();
+                        when(CreditCardDtoMapper.mapToCreditCard(creditCardDto)).thenReturn(creditCard);
+                        when(creditCardRepo.save(creditCard)).thenReturn(creditCard);
+
+
+                        userService.addCreditCardToUser("Shell89", creditCardDto);
+
+                        userService.deleteUserCreditCard("Shell89");
+
+                        verify(creditCardRepo, times(1)).delete(user.getCreditCard());
+                }
         }
 
         @Test
