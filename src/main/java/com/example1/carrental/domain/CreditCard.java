@@ -35,4 +35,7 @@ public class CreditCard {
         @Column(name = "accountBalance", nullable = false)
         private Long accountBalance;
 
+        @OneToOne
+        private User user;
+
 }

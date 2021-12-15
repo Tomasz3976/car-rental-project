@@ -26,4 +26,7 @@ public class AccessKey {
         @Column(name = "hours", nullable = false)
         private Integer hours;
 
+        @OneToOne
+        private User user;
+
 }
