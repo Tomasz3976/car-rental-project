@@ -112,7 +112,7 @@ class UserServiceTest {
         @Test
         void itShouldAddRoleToUser() {
                 User user = User.builder().firstName("Pawel").lastName("Mroczek").username("pablo").roles(new ArrayList<>()).build();
-                Role role = Role.builder().name("ROLE_ADMIN").build();
+                Role role = Role.builder().name("ROLE_ADMIN").users(new ArrayList<>()).build();
 
                 when(userRepo.findByUsername("pablo")).thenReturn(Optional.of(user));
                 when(roleRepo.findByName("ROLE_ADMIN")).thenReturn(Optional.of(role));
@@ -126,7 +126,7 @@ class UserServiceTest {
         @Test
         void itShouldDeleteUserRole() {
                 User user = User.builder().firstName("Kamil").lastName("Jasny").username("Kamilek").roles(new ArrayList<>()).build();
-                Role role = Role.builder().name("ROLE_USER").build();
+                Role role = Role.builder().name("ROLE_USER").users(new ArrayList<>()).build();
 
                 when(userRepo.findByUsername("Kamilek")).thenReturn(Optional.of(user));
                 when(roleRepo.findByName("ROLE_USER")).thenReturn(Optional.of(role));
