@@ -6,6 +6,7 @@ import com.example1.carrental.domain.User;
 import com.example1.carrental.dto.CreditCardDto;
 import com.example1.carrental.dto.UserEditDto;
 import com.example1.carrental.dto.UserSaveDto;
+import com.example1.carrental.exception.ExistingEntityException;
 import com.example1.carrental.mapper.UserSaveDtoMapper;
 import com.example1.carrental.repo.CreditCardRepo;
 import com.example1.carrental.repo.RoleRepo;
@@ -53,6 +54,10 @@ public class UserService implements UserDetailsService {
         }
 
         public UserSaveDto saveUser(UserSaveDto userSaveDto) {
+                if(userRepo.findByUsername(userSaveDto.getUsername()).isPresent()) {
+
+                        throw new ExistingEntityException("User With Given Username Already Exists!");
+                }
                 log.info("Saving new user {} to the database", userSaveDto.getUsername());
                 userSaveDto.setPassword(passwordEncoder.encode(userSaveDto.getPassword()));
                 userRepo.save(UserSaveDtoMapper.mapToUser(userSaveDto));
@@ -79,6 +84,10 @@ public class UserService implements UserDetailsService {
 
         public Role saveRole(Role role) {
                 log.info("Saving new role {} to the database", role.getName());
+                if(roleRepo.findByName(role.getName()).isPresent()) {
+
+                        throw new ExistingEntityException("Role With Given Name Already Exists!");
+                }
                 return roleRepo.save(role);
         }
 

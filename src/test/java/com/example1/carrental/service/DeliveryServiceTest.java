@@ -4,6 +4,7 @@ import com.example1.carrental.domain.*;
 import com.example1.carrental.exception.InvalidPackageException;
 import com.example1.carrental.exception.NoAccessKeyException;
 import com.example1.carrental.exception.UnavailableCarException;
+import com.example1.carrental.repo.AccessKeyRepo;
 import com.example1.carrental.repo.CarRepo;
 
 import com.example1.carrental.repo.OrderRepo;
@@ -32,6 +33,9 @@ class DeliveryServiceTest {
         OrderRepo orderRepo;
 
         @Mock
+        AccessKeyRepo accessKeyRepo;
+
+        @Mock
         LoggedInUser loggedInUser;
 
         @InjectMocks
@@ -39,15 +43,22 @@ class DeliveryServiceTest {
 
 
         @Test
-        void itShouldRentACar() throws AccessDeniedException {
+        void itShouldRentACar() {
                 CarPackage sporty = CarPackage.builder().packageName("Sporty").pricePerHour(300).build();
                 Car car = Car.builder().id(1L).brand("Audi").model("RS3").isAvailable(true).carPackage(sporty).build();
                 AccessKey accessKey = AccessKey.builder().carPackage("Sporty").hours(2).build();
-                User user = User.builder().username("BlackJohn32").accessKey(accessKey).build();
+                User user = User.builder().id(1L).username("BlackJohn32").accessKey(accessKey).build();
+                PlacedOrder placedOrder = PlacedOrder.builder()
+                        .userId(user.getId())
+                        .carId(car.getId())
+                        .brand(car.getBrand())
+                        .model(car.getModel())
+                        .build();
 
 
                 when(carRepo.findById(1L)).thenReturn(Optional.of(car));
                 when(loggedInUser.getUser()).thenReturn(user);
+                doNothing().when(accessKeyRepo).delete(user.getAccessKey());
 
                 assertThat(deliveryService.pickUpTheCar(1L)).isEqualTo(car);
                 assertThat(car.getIsAvailable()).isFalse();

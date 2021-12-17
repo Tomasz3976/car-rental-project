@@ -5,6 +5,7 @@ import com.example1.carrental.filter.CustomAuthorizationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -46,8 +47,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 http.authorizeRequests().antMatchers(AUTH_WHITELIST).permitAll()
                         .and().httpBasic().authenticationEntryPoint(swaggerAuthenticationEntryPoint());
                 http.authorizeRequests().antMatchers("/login").permitAll()
-                        .antMatchers("/admin/**").hasAnyAuthority("ROLE_ADMIN")
-                        .antMatchers("/cars/**", "/registration/**").hasAnyAuthority("ROLE_USER")
+                        .antMatchers(HttpMethod.DELETE, "/admin/**").hasAnyAuthority("ROLE_ADMIN")
+                        .antMatchers(HttpMethod.PUT, "/admin/**").hasAnyAuthority("ROLE_ADMIN")
+                        .antMatchers(HttpMethod.POST, "/admin/**").hasAnyAuthority("ROLE_MANAGER")
+                        .antMatchers(HttpMethod.GET, "/admin/**").hasAnyAuthority("ROLE_MANAGER")
+                        .antMatchers("/cars/**", "/registration/**", "/orders/**", "/delivery/**").hasAnyAuthority("ROLE_USER")
                         .anyRequest().authenticated()
                         .and().logout().logoutSuccessUrl("/login");
                 http.addFilter(new CustomAuthenticationFilter(authenticationManagerBean()));

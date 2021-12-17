@@ -61,7 +61,7 @@ class OrderServiceTest {
 
                         AccessKeyDto accessKeyDto = AccessKeyDto.builder().carPackage("Luxury").hours(2).build();
 
-                        when(AccessKeyDtoMapper.mapToAccessKeyDto(accessKey)).thenReturn(accessKeyDto);
+                        mockedStatic.when(() -> AccessKeyDtoMapper.mapToAccessKeyDto(accessKey)).thenReturn(accessKeyDto);
 
                         orderService.submitOrder("Luxury", 2);
 

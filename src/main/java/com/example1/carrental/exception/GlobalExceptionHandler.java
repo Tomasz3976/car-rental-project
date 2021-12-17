@@ -63,6 +63,16 @@ public class GlobalExceptionHandler {
 
         }
 
+        @ExceptionHandler(ExistingEntityException.class)
+        public ResponseEntity<Object> handleExistingEntityException(ExistingEntityException e, WebRequest request) {
+
+                ErrorDetails errorDetails = new ErrorDetails(e.getMessage(),
+                        request.getDescription(false), ZonedDateTime.now());
+
+                return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
+
+        }
+
         @ExceptionHandler(InsufficientFundsException.class)
         public ResponseEntity<Object> handleInsufficientFundsException(InsufficientFundsException e, WebRequest request) {
 
@@ -70,16 +80,6 @@ public class GlobalExceptionHandler {
                         request.getDescription(false), ZonedDateTime.now());
 
                 return new ResponseEntity<>(errorDetails, HttpStatus.FORBIDDEN);
-
-        }
-
-        @ExceptionHandler(ExistsUserException.class)
-        public ResponseEntity<Object> handleExistsUserException(ExistsUserException e, WebRequest request) {
-
-                ErrorDetails errorDetails = new ErrorDetails(e.getMessage(),
-                        request.getDescription(false), ZonedDateTime.now());
-
-                return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
 
         }
 

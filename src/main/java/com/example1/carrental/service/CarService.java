@@ -6,6 +6,7 @@ import com.example1.carrental.domain.PlacedOrder;
 import com.example1.carrental.dto.CarEditDto;
 import com.example1.carrental.dto.CarPackageDto;
 import com.example1.carrental.dto.CarSaveDto;
+import com.example1.carrental.exception.ExistingEntityException;
 import com.example1.carrental.repo.CarPackageRepo;
 import com.example1.carrental.repo.CarRepo;
 import com.example1.carrental.repo.OrderRepo;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
 
 import static com.example1.carrental.mapper.CarPackageDtoMapper.mapToCarPackage;
 import static com.example1.carrental.mapper.CarSaveDtoMapper.mapToCar;
@@ -81,6 +83,10 @@ public class CarService {
         }
 
         public CarPackage saveCarPackage(CarPackageDto carPackageDto) {
+                if(carPackageRepo.findByPackageName(carPackageDto.getPackageName()).isPresent()) {
+
+                        throw new ExistingEntityException("This Package Already Exists!");
+                }
                 log.info("Saving new package {} to the database", carPackageDto.getPackageName());
                 return carPackageRepo.save(mapToCarPackage(carPackageDto));
         }

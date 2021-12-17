@@ -4,9 +4,11 @@ import com.example1.carrental.domain.CreditCard;
 import com.example1.carrental.domain.User;
 import com.example1.carrental.dto.CreditCardDto;
 import com.example1.carrental.dto.UserSaveDto;
-import com.example1.carrental.exception.ExistsUserException;
+import com.example1.carrental.exception.ExistingEntityException;
 import com.example1.carrental.exception.NoCreditCardException;
 import com.example1.carrental.exception.WeakPasswordException;
+import com.example1.carrental.mapper.CreditCardDtoMapper;
+import com.example1.carrental.repo.CreditCardRepo;
 import com.example1.carrental.repo.UserRepo;
 import com.example1.carrental.security.LoggedInUser;
 import org.junit.jupiter.api.Test;
@@ -33,6 +35,9 @@ class RegistrationServiceTest {
         UserRepo userRepo;
 
         @Mock
+        CreditCardRepo creditCardRepo;
+
+        @Mock
         LoggedInUser loggedInUser;
 
         @InjectMocks
@@ -46,9 +51,18 @@ class RegistrationServiceTest {
 
                 when(loggedInUser.getUser()).thenReturn(user);
 
-                registrationService.addCreditCard(creditCardDto);
+                try(MockedStatic<CreditCardDtoMapper> mockedStatic = Mockito.mockStatic(CreditCardDtoMapper.class)) {
 
-                assertThat(user.getCreditCard()).isNotNull().hasFieldOrPropertyWithValue("cardNumber", 8888943300781111L);
+                        CreditCard creditCard = CreditCard.builder().cardNumber(8888943300781111L).build();
+
+                        mockedStatic.when(() -> CreditCardDtoMapper.mapToCreditCard(creditCardDto)).thenReturn(creditCard);
+
+                        when(creditCardRepo.save(creditCard)).thenReturn(creditCard);
+
+                        registrationService.addCreditCard(creditCardDto);
+
+                        assertThat(user.getCreditCard()).isNotNull().hasFieldOrPropertyWithValue("cardNumber", 8888943300781111L);
+                }
         }
 
         @Test
@@ -66,13 +80,13 @@ class RegistrationServiceTest {
         }
 
         @Test
-        void itShouldThrowExistsUserException() {
+        void itShouldThrowExistingEntityException() {
                 UserSaveDto userSaveDto = UserSaveDto.builder().username("GreenJohn78").build();
                 User user = User.builder().username("GreenJohn78").build();
 
                 when(userRepo.findByUsername(userSaveDto.getUsername())).thenReturn(Optional.of(user));
 
-                assertThrows(ExistsUserException.class, () -> registrationService.registerUser(userSaveDto));
+                assertThrows(ExistingEntityException.class, () -> registrationService.registerUser(userSaveDto));
         }
 
         @Test
@@ -88,7 +102,7 @@ class RegistrationServiceTest {
                         Pattern p = Pattern.compile(regex);
                         Matcher m = p.matcher(userSaveDto.getPassword());
 
-                        when(PasswordValidator.matcher(userSaveDto.getPassword())).thenReturn(m);
+                        mockedStatic.when(() -> PasswordValidator.matcher(userSaveDto.getPassword())).thenReturn(m);
 
                         assertThrows(WeakPasswordException.class, () -> registrationService.registerUser(userSaveDto));
                 }
