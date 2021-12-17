@@ -67,7 +67,7 @@ class CarServiceTest {
 
                         Car mapped = Car.builder().brand("Audi").model("A4").build();
 
-                        when(CarSaveDtoMapper.mapToCar(carSaveDto)).thenReturn(mapped);
+                        mockedStatic.when(() -> CarSaveDtoMapper.mapToCar(carSaveDto)).thenReturn(mapped);
 
                         when(carRepo.save(mapped)).thenReturn(mapped);
 
@@ -83,7 +83,7 @@ class CarServiceTest {
                 CarEditDto carEditDto = CarEditDto.builder().id(2L).build();
                 Car car = Car.builder().id(2L).build();
 
-                when(carRepo.findById(2L)).thenReturn(Optional.of(car));
+                when(carRepo.findById(carEditDto.getId())).thenReturn(Optional.of(car));
                 when(carRepo.save(car)).thenReturn(car);
 
                 assertThat(carService.editCar(carEditDto)).isEqualTo(car);
@@ -156,7 +156,7 @@ class CarServiceTest {
 
                         CarPackage mapped = CarPackage.builder().packageName("Luxury").pricePerHour(500).build();
 
-                        when(CarPackageDtoMapper.mapToCarPackage(luxury)).thenReturn(mapped);
+                        mockedStatic.when(() -> CarPackageDtoMapper.mapToCarPackage(luxury)).thenReturn(mapped);
 
                         when(carPackageRepo.save(mapped)).thenReturn(mapped);
 

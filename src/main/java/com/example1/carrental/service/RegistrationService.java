@@ -4,7 +4,7 @@ import com.example1.carrental.domain.CreditCard;
 import com.example1.carrental.domain.User;
 import com.example1.carrental.dto.CreditCardDto;
 import com.example1.carrental.dto.UserSaveDto;
-import com.example1.carrental.exception.ExistsUserException;
+import com.example1.carrental.exception.ExistingEntityException;
 import com.example1.carrental.exception.NoCreditCardException;
 import com.example1.carrental.exception.WeakPasswordException;
 import com.example1.carrental.mapper.UserSaveDtoMapper;
@@ -37,7 +37,7 @@ public class RegistrationService {
 
                 if (userRepo.findByUsername(userSaveDto.getUsername()).isPresent()) {
 
-                        throw new ExistsUserException("User With Given Username Already Exists!");
+                        throw new ExistingEntityException("User With Given Username Already Exists!");
 
                 } else if (!PasswordValidator.matcher(userSaveDto.getPassword()).matches()) {
 
@@ -59,9 +59,8 @@ public class RegistrationService {
 
                 log.info("Adding credit card to user");
                 User user = loggedInUser.getUser();
-                if(user.getCreditCard() != null) {
-                        throw new IllegalCallerException("You Already Have Credit Card!");
-                }
+
+                if(user.getCreditCard() != null) throw new IllegalCallerException("You Already Have Credit Card!");
                 CreditCard card = creditCardRepo.save(mapToCreditCard(creditCardDto));
                 user.setCreditCard(card);
                 card.setUser(user);

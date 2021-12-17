@@ -4,6 +4,7 @@ import com.example1.carrental.domain.CreditCard;
 import com.example1.carrental.domain.Role;
 import com.example1.carrental.domain.User;
 import com.example1.carrental.dto.CreditCardDto;
+import com.example1.carrental.dto.UserEditDto;
 import com.example1.carrental.dto.UserSaveDto;
 import com.example1.carrental.mapper.CarSaveDtoMapper;
 import com.example1.carrental.mapper.CreditCardDtoMapper;
@@ -52,25 +53,33 @@ class UserServiceTest {
                 UserSaveDto userSaveDto = UserSaveDto.builder().firstName("Sebastian").lastName("Alvarez")
                         .username("sebix").password("Marbella465").email("apple@gamil.com").phone(968956584).build();
 
-                userSaveDto.setPassword(passwordEncoder.encode(userSaveDto.getPassword()));
-                User user = UserSaveDtoMapper.mapToUser(userSaveDto);
+                when(userRepo.findByUsername("sebix")).thenReturn(Optional.empty());
 
-                when(userRepo.save(user)).thenReturn(user);
+                try (MockedStatic<UserSaveDtoMapper> mockedStatic = Mockito.mockStatic(UserSaveDtoMapper.class)) {
 
-                userService.saveUser(userSaveDto);
+                        User user = User.builder().firstName("Sebastian").lastName("Alvarez")
+                                .username("sebix").password("Marbella465").email("apple@gamil.com").phone(968956584).build();
 
-                assertThat(user.getFirstName()).isEqualTo(userSaveDto.getFirstName());
-                assertThat(user.getEmail()).isEqualTo(userSaveDto.getEmail());
+                        mockedStatic.when(() -> UserSaveDtoMapper.mapToUser(userSaveDto)).thenReturn(user);
+
+                        when(userRepo.save(user)).thenReturn(user);
+
+                        userService.saveUser(userSaveDto);
+
+                        assertThat(user.getFirstName()).isEqualTo(userSaveDto.getFirstName());
+                        assertThat(user.getEmail()).isEqualTo(userSaveDto.getEmail());
+                }
         }
 
         @Test
         void itShouldCheckIfUserIsEdited() {
+                UserEditDto userEditDto = UserEditDto.builder().id(2L).build();
                 User user = User.builder().id(2L).build();
 
-                when(userRepo.findById(2L)).thenReturn(Optional.of(user));
+                when(userRepo.findById(userEditDto.getId())).thenReturn(Optional.of(user));
                 when(userRepo.save(user)).thenReturn(user);
 
-                assertThat(userService.editUser(UserEditDtoMapper.mapUserToUserDto(user))).isEqualTo(user);
+                assertThat(userService.editUser(userEditDto)).isEqualTo(user);
         }
 
         @Test
@@ -88,6 +97,7 @@ class UserServiceTest {
         void itShouldSaveRole() {
                 Role role = Role.builder().name("ROLE_MANAGER").build();
 
+                when(roleRepo.findByName("ROLE_MANAGER")).thenReturn(Optional.empty());
                 when(roleRepo.save(role)).thenReturn(role);
 
                 Role saved = userService.saveRole(role);
@@ -136,7 +146,7 @@ class UserServiceTest {
 
                         CreditCard creditCard = CreditCard.builder().cardNumber(7756443322118596L).build();
 
-                        when(CreditCardDtoMapper.mapToCreditCard(creditCardDto)).thenReturn(creditCard);
+                        mockedStatic.when(() -> CreditCardDtoMapper.mapToCreditCard(creditCardDto)).thenReturn(creditCard);
                         when(creditCardRepo.save(creditCard)).thenReturn(creditCard);
                         when(userRepo.save(user)).thenReturn(user);
 
@@ -157,7 +167,7 @@ class UserServiceTest {
 
                         CreditCard creditCard = CreditCard.builder().cardNumber(9999111122223333L).build();
 
-                        when(CreditCardDtoMapper.mapToCreditCard(creditCardDto)).thenReturn(creditCard);
+                        mockedStatic.when(() -> CreditCardDtoMapper.mapToCreditCard(creditCardDto)).thenReturn(creditCard);
                         when(creditCardRepo.save(creditCard)).thenReturn(creditCard);
 
 
