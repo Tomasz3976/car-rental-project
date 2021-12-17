@@ -12,15 +12,15 @@ import javax.persistence.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Table(name = "creditCard")
+@Table(name = "credit_card")
 public class CreditCard {
 
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
-        @Column(name = "id", unique = true, nullable = false)
+        @Column(name = "credit_card_id", unique = true, nullable = false)
         private Long id;
 
-        @Column(name = "cardNumber", unique = true, nullable = false, length = 16)
+        @Column(name = "card_number", unique = true, nullable = false, length = 16)
         private Long cardNumber;
 
         @Column(name = "month", nullable = false, length = 2)
@@ -29,10 +29,10 @@ public class CreditCard {
         @Column(name = "year", nullable = false, length = 4)
         private Integer year;
 
-        @Column(name = "CVV", nullable = false, length = 3)
+        @Column(name = "cvv", nullable = false, length = 3)
         private Integer CVV;
 
-        @Column(name = "accountBalance", nullable = false)
+        @Column(name = "account_balance", nullable = false)
         private Long accountBalance;
 
         @OneToOne

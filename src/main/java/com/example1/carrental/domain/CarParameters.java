@@ -15,30 +15,30 @@ import javax.persistence.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Table(name = "CarParameters")
+@Table(name = "car_parameters")
 public class CarParameters {
 
         @Id
         @JsonIgnore
         @GeneratedValue(strategy = GenerationType.IDENTITY)
-        @Column(name = "id", unique = true, nullable = false)
+        @Column(name = "car_parameters_id", unique = true, nullable = false)
         private Long id;
 
         @Enumerated(EnumType.STRING)
-        @Column(name = "fuelType", nullable = false)
+        @Column(name = "fuel_type", nullable = false)
         private FuelType fuelType;
 
         @Enumerated(EnumType.STRING)
-        @Column(name = "gearBoxType", nullable = false)
+        @Column(name = "gear_box_type", nullable = false)
         private GearBoxType gearBoxType;
 
-        @Column(name = "numberOfDoors", nullable = false)
+        @Column(name = "number_of_doors", nullable = false)
         private Integer numberOfDoors;
 
-        @Column(name = "numberOfSeats", nullable = false)
+        @Column(name = "number_of_seats", nullable = false)
         private Integer numberOfSeats;
 
-        @Column(name = "airConditioningAvailable", nullable = false)
-        private Boolean airConditioningAvailable;
+        @Column(name = "is_air_conditioning_available", nullable = false)
+        private Boolean isAirConditioningAvailable;
 
 }

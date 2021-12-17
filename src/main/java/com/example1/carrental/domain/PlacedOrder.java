@@ -13,18 +13,18 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Table(name = "placedOrder")
+@Table(name = "placed_order")
 public class PlacedOrder {
 
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
-        @Column(name = "id", unique = true, nullable = false)
+        @Column(name = "placed_order_id", unique = true, nullable = false)
         private Long id;
 
-        @Column(name = "userId", nullable = false)
+        @Column(name = "user_id", nullable = false)
         private Long userId;
 
-        @Column(name = "carId", nullable = false)
+        @Column(name = "car_id", nullable = false)
         private Long carId;
 
         @Column(name = "brand", nullable = false)
@@ -33,10 +33,10 @@ public class PlacedOrder {
         @Column(name = "model", nullable = false)
         private String model;
 
-        @Column(name = "startTime", nullable = false)
+        @Column(name = "start_time", nullable = false)
         private LocalDateTime startTime;
 
-        @Column(name = "endTime", nullable = false)
+        @Column(name = "end_time", nullable = false)
         private LocalDateTime endTime;
 
 }

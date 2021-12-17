@@ -14,18 +14,18 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Table(name = "CarPackage")
+@Table(name = "car_package")
 public class CarPackage {
 
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
-        @Column(name = "id", unique = true, nullable = false)
+        @Column(name = "car_package_id", unique = true, nullable = false)
         private Long id;
 
-        @Column(name = "packageName", nullable = false)
+        @Column(name = "package_name", nullable = false)
         private String packageName;
 
-        @Column(name = "pricePerHour", nullable = false)
+        @Column(name = "price_per_hour", nullable = false)
         private Integer pricePerHour;
 
         @JsonIgnore
