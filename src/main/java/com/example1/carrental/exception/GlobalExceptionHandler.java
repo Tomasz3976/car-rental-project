@@ -129,7 +129,7 @@ public class GlobalExceptionHandler {
                 ErrorDetails errorDetails = new ErrorDetails(e.getMessage(),
                         request.getDescription(false), ZonedDateTime.now());
 
-                return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
+                return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
 
         }
 
