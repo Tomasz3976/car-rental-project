@@ -12,12 +12,12 @@ import javax.persistence.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Table(name = "Role")
+@Table(name = "role")
 public class Role {
 
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
-        @Column(name = "id", unique = true, nullable = false)
+        @Column(name = "role_id", unique = true, nullable = false)
         private Long id;
 
         @Column(name = "name", unique = true, nullable = false)

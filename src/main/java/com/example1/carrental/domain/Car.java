@@ -12,15 +12,15 @@ import javax.persistence.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Table(name = "Car")
+@Table(name = "car")
 public class Car {
 
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
-        @Column(name = "id", unique = true, nullable = false)
+        @Column(name = "car_id", unique = true, nullable = false)
         private Long id;
 
-        @Column(name = "registrationNr", nullable = false, length = 8)
+        @Column(name = "registration_nr", nullable = false, length = 8)
         private String registrationNr;
 
         @Column(name = "brand", nullable = false)
@@ -29,11 +29,11 @@ public class Car {
         @Column(name = "model", nullable = false)
         private String model;
 
-        @Column(name = "isAvailable", nullable = false)
+        @Column(name = "is_available", nullable = false)
         private Boolean isAvailable;
 
         @ManyToOne(fetch = FetchType.EAGER)
-        @JoinColumn(name = "car_package_id", referencedColumnName = "id", nullable = false)
+        @JoinColumn(name = "car_package_id", referencedColumnName = "car_package_id", nullable = false)
         private CarPackage carPackage;
 
         @OneToOne(cascade = CascadeType.ALL)

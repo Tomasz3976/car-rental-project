@@ -16,18 +16,18 @@ import java.util.Collection;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Table(name = "User")
+@Table(name = "user")
 public class User {
 
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
-        @Column(name = "id", unique = true, nullable = false)
+        @Column(name = "user_id", unique = true, nullable = false)
         private Long id;
 
-        @Column(name = "firstName", nullable = false)
+        @Column(name = "first_name", nullable = false)
         private String firstName;
 
-        @Column(name = "lastName", nullable = false)
+        @Column(name = "last_name", nullable = false)
         private String lastName;
 
         @Column(name = "username", nullable = false)
