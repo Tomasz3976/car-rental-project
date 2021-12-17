@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -21,8 +22,8 @@ class RoleRepoTest {
 
         @BeforeEach
         void setUp() {
-                Role role = new Role(null, "ROLE_ADMIN");
-                Role role2 = new Role(null, "ROLE_USER");
+                Role role = new Role(null, "ROLE_ADMIN", new ArrayList<>());
+                Role role2 = new Role(null, "ROLE_USER", new ArrayList<>());
                 underTest.save(role);
                 underTest.save(role2);
         }

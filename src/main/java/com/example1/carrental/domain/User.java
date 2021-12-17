@@ -52,6 +52,7 @@ public class User {
         private AccessKey accessKey;
 
         @ManyToMany(cascade = CascadeType.PERSIST)
+        @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
         private Collection<Role> roles = new ArrayList<>();
 
 }

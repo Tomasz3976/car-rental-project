@@ -103,6 +103,7 @@ public class UserService implements UserDetailsService {
                         throw new AssignedRoleException("User Already Has This Role");
                 }
                 user.getRoles().add(role);
+                role.getUsers().add(user);
                 return userRepo.save(user);
         }
 
@@ -113,6 +114,7 @@ public class UserService implements UserDetailsService {
                 Role role = roleRepo.findByName(roleName)
                         .orElseThrow(() -> new EntityNotFoundException("This Role Does Not Exists!"));
                 user.getRoles().remove(role);
+                role.getUsers().remove(user);
         }
 
         public User addCreditCardToUser(String username, CreditCardDto creditCardDto) {
