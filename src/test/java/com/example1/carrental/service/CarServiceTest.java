@@ -6,6 +6,7 @@ import com.example1.carrental.domain.PlacedOrder;
 import com.example1.carrental.dto.CarEditDto;
 import com.example1.carrental.dto.CarPackageDto;
 import com.example1.carrental.dto.CarSaveDto;
+import com.example1.carrental.exception.ExistingEntityException;
 import com.example1.carrental.mapper.CarPackageDtoMapper;
 import com.example1.carrental.mapper.CarSaveDtoMapper;
 import com.example1.carrental.mapper.UserSaveDtoMapper;
@@ -29,6 +30,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 
@@ -116,27 +118,6 @@ class CarServiceTest {
         }
 
         @Test
-        void itShouldReturnAvailableCars() {
-                Car available1 = Car.builder().registrationNr("OPE74639").brand("Audi").model("80").isAvailable(true).build();
-                Car notAvailable1 = Car.builder().registrationNr("JKD94839").brand("Rolls-Royce").model("Phantom").isAvailable(false).build();
-                Car available2 = Car.builder().registrationNr("HJD85743").brand("Fiat").model("Stilo").isAvailable(true).build();
-                Car available3 = Car.builder().registrationNr("ASD84754").brand("Toyota").model("Yaris").isAvailable(true).build();
-                Car notAvailable2 = Car.builder().registrationNr("OIU95840").brand("Opel").model("Insignia").isAvailable(false).build();
-                List<Car> cars = new ArrayList<>();
-                cars.add(available1);
-                cars.add(notAvailable1);
-                cars.add(available2);
-                cars.add(available3);
-                cars.add(notAvailable2);
-
-                when(carRepo.findAvailableCars(PageRequest.of(1, 10, Sort.by(Sort.Direction.ASC, "id"))))
-                        .thenReturn(cars.stream()
-                        .filter(car -> car.getIsAvailable()).collect(Collectors.toList()));
-
-                assertThat(carService.getAvailableCars(1, Sort.Direction.ASC)).hasSize(3);
-        }
-
-        @Test
         void itShouldReturnCarPackages() {
                 CarPackage carPackage1 = new CarPackage();
                 CarPackage carPackage2 = new CarPackage();
@@ -179,6 +160,37 @@ class CarServiceTest {
 
                 verify(carPackageRepo, times(1)).deleteById(3L);
                 verify(carPackageRepo, times(1)).deleteById(4L);
+        }
+
+        @Test
+        void itShouldThrowExistingPackageException() {
+                CarPackageDto carPackageDto = CarPackageDto.builder().packageName("Sporty").build();
+                CarPackage carPackage = CarPackage.builder().packageName("Sporty").build();
+
+                when(carPackageRepo.findByPackageName("Sporty")).thenReturn(Optional.of(carPackage));
+
+                assertThrows(ExistingEntityException.class, () -> carService.saveCarPackage(carPackageDto));
+        }
+
+        @Test
+        void itShouldReturnAvailableCars() {
+                Car available1 = Car.builder().registrationNr("OPE74639").brand("Audi").model("80").isAvailable(true).build();
+                Car notAvailable1 = Car.builder().registrationNr("JKD94839").brand("Rolls-Royce").model("Phantom").isAvailable(false).build();
+                Car available2 = Car.builder().registrationNr("HJD85743").brand("Fiat").model("Stilo").isAvailable(true).build();
+                Car available3 = Car.builder().registrationNr("ASD84754").brand("Toyota").model("Yaris").isAvailable(true).build();
+                Car notAvailable2 = Car.builder().registrationNr("OIU95840").brand("Opel").model("Insignia").isAvailable(false).build();
+                List<Car> cars = new ArrayList<>();
+                cars.add(available1);
+                cars.add(notAvailable1);
+                cars.add(available2);
+                cars.add(available3);
+                cars.add(notAvailable2);
+
+                when(carRepo.findAvailableCars(PageRequest.of(1, 10, Sort.by(Sort.Direction.ASC, "id"))))
+                        .thenReturn(cars.stream()
+                                .filter(car -> car.getIsAvailable()).collect(Collectors.toList()));
+
+                assertThat(carService.getAvailableCars(1, Sort.Direction.ASC)).hasSize(3);
         }
 
         @Test

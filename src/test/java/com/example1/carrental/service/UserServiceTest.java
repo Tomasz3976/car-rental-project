@@ -6,6 +6,7 @@ import com.example1.carrental.domain.User;
 import com.example1.carrental.dto.CreditCardDto;
 import com.example1.carrental.dto.UserEditDto;
 import com.example1.carrental.dto.UserSaveDto;
+import com.example1.carrental.exception.ExistingEntityException;
 import com.example1.carrental.mapper.CarSaveDtoMapper;
 import com.example1.carrental.mapper.CreditCardDtoMapper;
 import com.example1.carrental.mapper.UserEditDtoMapper;
@@ -27,6 +28,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -177,6 +179,26 @@ class UserServiceTest {
 
                         verify(creditCardRepo, times(1)).delete(user.getCreditCard());
                 }
+        }
+
+        @Test
+        void itShouldThrowExistingUserException() {
+                UserSaveDto userSaveDto = UserSaveDto.builder().username("Flick").build();
+                User user = User.builder().username("Flick").build();
+
+                when(userRepo.findByUsername("Flick")).thenReturn(Optional.of(user));
+
+                assertThrows(ExistingEntityException.class, () -> userService.saveUser(userSaveDto));
+        }
+
+        @Test
+        void itShouldThrowExistingRoleException() {
+                Role role = Role.builder().name("ROLE_VISITOR").build();
+                Role role2 = Role.builder().name("ROLE_VISITOR").build();
+
+                when(roleRepo.findByName("ROLE_VISITOR")).thenReturn(Optional.of(role2));
+
+                assertThrows(ExistingEntityException.class, () -> userService.saveRole(role));
         }
 
         @Test
