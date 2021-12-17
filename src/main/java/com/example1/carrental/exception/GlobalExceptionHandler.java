@@ -123,4 +123,14 @@ public class GlobalExceptionHandler {
 
         }
 
+        @ExceptionHandler(AssignedRoleException.class)
+        public ResponseEntity<Object> handleAssignedRoleException(AssignedRoleException e, WebRequest request) {
+
+                ErrorDetails errorDetails = new ErrorDetails(e.getMessage(),
+                        request.getDescription(false), ZonedDateTime.now());
+
+                return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
+
+        }
+
 }
