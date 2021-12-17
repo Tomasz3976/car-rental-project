@@ -6,6 +6,7 @@ import com.example1.carrental.domain.User;
 import com.example1.carrental.dto.CreditCardDto;
 import com.example1.carrental.dto.UserEditDto;
 import com.example1.carrental.dto.UserSaveDto;
+import com.example1.carrental.exception.AssignedRoleException;
 import com.example1.carrental.exception.ExistingEntityException;
 import com.example1.carrental.mapper.CarSaveDtoMapper;
 import com.example1.carrental.mapper.CreditCardDtoMapper;
@@ -24,6 +25,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -199,6 +201,17 @@ class UserServiceTest {
                 when(roleRepo.findByName("ROLE_VISITOR")).thenReturn(Optional.of(role2));
 
                 assertThrows(ExistingEntityException.class, () -> userService.saveRole(role));
+        }
+
+        @Test
+        void itShouldThrowAssignedRoleException() {
+                Role role = Role.builder().name("ROLE_USER").build();
+                User user = User.builder().username("Zbyszek").roles(Arrays.asList(role)).build();
+
+                when(userRepo.findByUsername("Zbyszek")).thenReturn(Optional.of(user));
+                when(roleRepo.findByName("ROLE_USER")).thenReturn(Optional.of(role));
+
+                assertThrows(AssignedRoleException.class, () -> userService.addRoleToUser("Zbyszek", "ROLE_USER"));
         }
 
         @Test

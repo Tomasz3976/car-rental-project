@@ -6,6 +6,7 @@ import com.example1.carrental.domain.User;
 import com.example1.carrental.dto.CreditCardDto;
 import com.example1.carrental.dto.UserEditDto;
 import com.example1.carrental.dto.UserSaveDto;
+import com.example1.carrental.exception.AssignedRoleException;
 import com.example1.carrental.exception.ExistingEntityException;
 import com.example1.carrental.mapper.UserSaveDtoMapper;
 import com.example1.carrental.repo.CreditCardRepo;
@@ -97,6 +98,10 @@ public class UserService implements UserDetailsService {
                         .orElseThrow(() -> new UsernameNotFoundException("This User Does Not Exists!"));
                 Role role = roleRepo.findByName(roleName)
                         .orElseThrow(() -> new EntityNotFoundException("This Role Does Not Exists!"));
+                if(user.getRoles().contains(role)) {
+
+                        throw new AssignedRoleException("User Already Has This Role");
+                }
                 user.getRoles().add(role);
                 return userRepo.save(user);
         }
