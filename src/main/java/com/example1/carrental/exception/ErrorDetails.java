@@ -2,7 +2,6 @@ package com.example1.carrental.exception;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import org.springframework.http.HttpStatus;
 
 import java.time.ZonedDateTime;
 

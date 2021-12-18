@@ -4,14 +4,11 @@ import com.example1.carrental.domain.CreditCard;
 import com.example1.carrental.domain.Role;
 import com.example1.carrental.domain.User;
 import com.example1.carrental.dto.CreditCardDto;
-import com.example1.carrental.dto.UserEditDto;
-import com.example1.carrental.dto.UserSaveDto;
+import com.example1.carrental.dto.UserDto;
 import com.example1.carrental.exception.AssignedRoleException;
 import com.example1.carrental.exception.ExistingEntityException;
-import com.example1.carrental.mapper.CarSaveDtoMapper;
 import com.example1.carrental.mapper.CreditCardDtoMapper;
-import com.example1.carrental.mapper.UserEditDtoMapper;
-import com.example1.carrental.mapper.UserSaveDtoMapper;
+import com.example1.carrental.mapper.UserDtoMapper;
 import com.example1.carrental.repo.CreditCardRepo;
 import com.example1.carrental.repo.RoleRepo;
 import com.example1.carrental.repo.UserRepo;
@@ -54,36 +51,37 @@ class UserServiceTest {
 
         @Test
         void itShouldSaveUser() {
-                UserSaveDto userSaveDto = UserSaveDto.builder().firstName("Sebastian").lastName("Alvarez")
+                UserDto userDto = UserDto.builder().firstName("Sebastian").lastName("Alvarez")
                         .username("sebix").password("Marbella465").email("apple@gamil.com").phone(968956584).build();
 
                 when(userRepo.findByUsername("sebix")).thenReturn(Optional.empty());
 
-                try (MockedStatic<UserSaveDtoMapper> mockedStatic = Mockito.mockStatic(UserSaveDtoMapper.class)) {
+                try (MockedStatic<UserDtoMapper> mockedStatic = Mockito.mockStatic(UserDtoMapper.class)) {
 
                         User user = User.builder().firstName("Sebastian").lastName("Alvarez")
                                 .username("sebix").password("Marbella465").email("apple@gamil.com").phone(968956584).build();
 
-                        mockedStatic.when(() -> UserSaveDtoMapper.mapToUser(userSaveDto)).thenReturn(user);
+                        mockedStatic.when(() -> UserDtoMapper.mapToUser(userDto)).thenReturn(user);
 
                         when(userRepo.save(user)).thenReturn(user);
 
-                        userService.saveUser(userSaveDto);
+                        userService.saveUser(userDto);
 
-                        assertThat(user.getFirstName()).isEqualTo(userSaveDto.getFirstName());
-                        assertThat(user.getEmail()).isEqualTo(userSaveDto.getEmail());
+                        assertThat(user.getFirstName()).isEqualTo(userDto.getFirstName());
+                        assertThat(user.getEmail()).isEqualTo(userDto.getEmail());
                 }
         }
 
         @Test
         void itShouldCheckIfUserIsEdited() {
-                UserEditDto userEditDto = UserEditDto.builder().id(2L).build();
+                Long id = 2L;
+                UserDto userDto = UserDto.builder().username("Amigo").build();
                 User user = User.builder().id(2L).build();
 
-                when(userRepo.findById(userEditDto.getId())).thenReturn(Optional.of(user));
+                when(userRepo.findById(id)).thenReturn(Optional.of(user));
                 when(userRepo.save(user)).thenReturn(user);
 
-                assertThat(userService.editUser(userEditDto)).isEqualTo(user);
+                assertThat(userService.editUser(id, userDto)).isEqualTo(user);
         }
 
         @Test
@@ -185,12 +183,12 @@ class UserServiceTest {
 
         @Test
         void itShouldThrowExistingUserException() {
-                UserSaveDto userSaveDto = UserSaveDto.builder().username("Flick").build();
+                UserDto userDto = UserDto.builder().username("Flick").build();
                 User user = User.builder().username("Flick").build();
 
                 when(userRepo.findByUsername("Flick")).thenReturn(Optional.of(user));
 
-                assertThrows(ExistingEntityException.class, () -> userService.saveUser(userSaveDto));
+                assertThrows(ExistingEntityException.class, () -> userService.saveUser(userDto));
         }
 
         @Test

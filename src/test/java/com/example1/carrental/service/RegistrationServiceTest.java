@@ -3,7 +3,7 @@ package com.example1.carrental.service;
 import com.example1.carrental.domain.CreditCard;
 import com.example1.carrental.domain.User;
 import com.example1.carrental.dto.CreditCardDto;
-import com.example1.carrental.dto.UserSaveDto;
+import com.example1.carrental.dto.UserDto;
 import com.example1.carrental.exception.ExistingEntityException;
 import com.example1.carrental.exception.NoCreditCardException;
 import com.example1.carrental.exception.WeakPasswordException;
@@ -81,30 +81,30 @@ class RegistrationServiceTest {
 
         @Test
         void itShouldThrowExistingEntityException() {
-                UserSaveDto userSaveDto = UserSaveDto.builder().username("GreenJohn78").build();
+                UserDto userDto = UserDto.builder().username("GreenJohn78").build();
                 User user = User.builder().username("GreenJohn78").build();
 
-                when(userRepo.findByUsername(userSaveDto.getUsername())).thenReturn(Optional.of(user));
+                when(userRepo.findByUsername(userDto.getUsername())).thenReturn(Optional.of(user));
 
-                assertThrows(ExistingEntityException.class, () -> registrationService.registerUser(userSaveDto));
+                assertThrows(ExistingEntityException.class, () -> registrationService.registerUser(userDto));
         }
 
         @Test
         void itShouldThrowWeakPasswordException() {
-                UserSaveDto userSaveDto = UserSaveDto.builder().username("JohnBDP685").password("johnapple56").build();
+                UserDto userDto = UserDto.builder().username("JohnBDP685").password("johnapple56").build();
 
-                when(userRepo.findByUsername(userSaveDto.getUsername())).thenReturn(Optional.empty());
+                when(userRepo.findByUsername(userDto.getUsername())).thenReturn(Optional.empty());
 
 
                 try (MockedStatic<PasswordValidator> mockedStatic = Mockito.mockStatic(PasswordValidator.class)) {
 
                         String regex = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d]{8,}$";
                         Pattern p = Pattern.compile(regex);
-                        Matcher m = p.matcher(userSaveDto.getPassword());
+                        Matcher m = p.matcher(userDto.getPassword());
 
-                        mockedStatic.when(() -> PasswordValidator.matcher(userSaveDto.getPassword())).thenReturn(m);
+                        mockedStatic.when(() -> PasswordValidator.matcher(userDto.getPassword())).thenReturn(m);
 
-                        assertThrows(WeakPasswordException.class, () -> registrationService.registerUser(userSaveDto));
+                        assertThrows(WeakPasswordException.class, () -> registrationService.registerUser(userDto));
                 }
         }
 

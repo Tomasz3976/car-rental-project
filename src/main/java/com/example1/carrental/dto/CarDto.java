@@ -8,7 +8,7 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 @Builder
-public class CarSaveDto {
+public class CarDto {
 
         private String registrationNr;
         private String brand;

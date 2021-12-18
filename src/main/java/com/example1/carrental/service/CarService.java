@@ -3,9 +3,8 @@ package com.example1.carrental.service;
 import com.example1.carrental.domain.Car;
 import com.example1.carrental.domain.CarPackage;
 import com.example1.carrental.domain.PlacedOrder;
-import com.example1.carrental.dto.CarEditDto;
 import com.example1.carrental.dto.CarPackageDto;
-import com.example1.carrental.dto.CarSaveDto;
+import com.example1.carrental.dto.CarDto;
 import com.example1.carrental.exception.ExistingEntityException;
 import com.example1.carrental.repo.CarPackageRepo;
 import com.example1.carrental.repo.CarRepo;
@@ -19,7 +18,6 @@ import org.springframework.stereotype.Service;
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import java.util.List;
-import java.util.Optional;
 
 import static com.example1.carrental.mapper.CarPackageDtoMapper.mapToCarPackage;
 import static com.example1.carrental.mapper.CarSaveDtoMapper.mapToCar;
@@ -41,24 +39,24 @@ public class CarService {
                         .orElseThrow(() -> new EntityNotFoundException("Car With This ID Does Not Exists!"));
         }
 
-        public Car saveCar(CarSaveDto carSaveDto, String packageName) {
+        public Car saveCar(CarDto carDto, String packageName) {
                 CarPackage carPackage = carPackageRepo.findByPackageName(packageName)
                         .orElseThrow(() -> new EntityNotFoundException("This Package Does Not Exists!"));
-                log.info("Saving new car {} {} to the database", carSaveDto.getBrand(), carSaveDto.getModel());
-                Car car = mapToCar(carSaveDto);
+                log.info("Saving new car {} {} to the database", carDto.getBrand(), carDto.getModel());
+                Car car = mapToCar(carDto);
                 car.setCarPackage(carPackage);
                 return carRepo.save(car);
         }
 
-        public Car editCar(CarEditDto carEditDto) {
-                Car carEdited = carRepo.findById(carEditDto.getId())
+        public Car editCar(Long id, CarDto carDto) {
+                Car carEdited = carRepo.findById(id)
                         .orElseThrow(() -> new EntityNotFoundException("This Car Does Not Exists!"));
-                log.info("Edition car with id {}", carEditDto.getId());
-                carEdited.setRegistrationNr(carEditDto.getRegistrationNr());
-                carEdited.setBrand(carEditDto.getBrand());
-                carEdited.setModel(carEditDto.getModel());
-                carEdited.setIsAvailable(carEditDto.getIsAvailable());
-                carEdited.setCarParameters(carEditDto.getCarParameters());
+                log.info("Edition car with id {}", id);
+                carEdited.setRegistrationNr(carDto.getRegistrationNr());
+                carEdited.setBrand(carDto.getBrand());
+                carEdited.setModel(carDto.getModel());
+                carEdited.setIsAvailable(carDto.getIsAvailable());
+                carEdited.setCarParameters(carDto.getCarParameters());
                 return carRepo.save(carEdited);
         }
 

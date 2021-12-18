@@ -2,7 +2,7 @@ package com.example1.carrental.controller;
 
 import com.example1.carrental.domain.*;
 import com.example1.carrental.dto.*;
-import com.example1.carrental.mapper.UserEditDtoMapper;
+import com.example1.carrental.mapper.UserDisplayDtoMapper;
 import com.example1.carrental.service.CarService;
 import com.example1.carrental.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -18,19 +18,19 @@ public class AdminController {
         private final UserService userService;
         private final CarService carService;
 
-        @GetMapping("/users")
-        public List<UserEditDto> getUsers() {
-                return UserEditDtoMapper.mapUserToUserDto(userService.getUsers());
+        @GetMapping("/users/all")
+        public List<UserDisplayDto> getUsers() {
+                return UserDisplayDtoMapper.mapUserToUserDisplayDto(userService.getUsers());
         }
 
         @PostMapping("/users")
-        public UserSaveDto saveUser(@RequestBody UserSaveDto userSaveDto) {
-                return userService.saveUser(userSaveDto);
+        public UserDto saveUser(@RequestBody UserDto userDto) {
+                return userService.saveUser(userDto);
         }
 
-        @PutMapping("/users")
-        public User editUser(@RequestBody UserEditDto userEditDto) {
-                return userService.editUser(userEditDto);
+        @PutMapping("/users/{id}")
+        public User editUser(@PathVariable Long id, @RequestBody UserDto userDto) {
+                return userService.editUser(id, userDto);
         }
 
         @DeleteMapping("/users/{id}")
@@ -38,28 +38,28 @@ public class AdminController {
                 userService.deleteUser(id);
         }
 
-        @PostMapping("/users/roles")
+        @PostMapping("/roles")
         public Role saveRole(@RequestBody Role role) {
                 return userService.saveRole(role);
         }
 
-        @PutMapping("/users/roles")
-        public User addRoleToUser(@RequestParam String username, @RequestParam String roleName) {
+        @PutMapping("/users/{username}/roles")
+        public User addRoleToUser(@PathVariable String username, @RequestParam String roleName) {
                 return userService.addRoleToUser(username, roleName);
         }
 
-        @DeleteMapping("/users/roles")
-        public void deleteUserRole(@RequestParam String username, @RequestParam String roleName) {
+        @DeleteMapping("/users/{username}/roles/{roleName}")
+        public void deleteUserRole(@PathVariable String username, @PathVariable String roleName) {
                 userService.deleteUserRole(username, roleName);
         }
 
-        @PutMapping("/users/creditCards")
-        public User addCreditCardToUser(@RequestParam String username, @RequestBody CreditCardDto creditCardDto) {
+        @PutMapping("/users/{username}/creditCards")
+        public User addCreditCardToUser(@PathVariable String username, @RequestBody CreditCardDto creditCardDto) {
                 return userService.addCreditCardToUser(username, creditCardDto);
         }
 
-        @DeleteMapping("/users/creditCards")
-        public void deleteUserCreditCard(@RequestParam String username) {
+        @DeleteMapping("/users/{username}/creditCards")
+        public void deleteUserCreditCard(@PathVariable String username) {
                 userService.deleteUserCreditCard(username);
         }
 
@@ -69,13 +69,13 @@ public class AdminController {
         }
 
         @PostMapping("/cars")
-        public Car saveCar(@RequestBody CarSaveDto carSaveDto, @RequestParam String packageName) {
-                return carService.saveCar(carSaveDto, packageName);
+        public Car saveCar(@RequestBody CarDto carDto, @RequestParam String packageName) {
+                return carService.saveCar(carDto, packageName);
         }
 
-        @PutMapping("/cars")
-        public Car editCar(@RequestBody CarEditDto carEditDto) {
-                return carService.editCar(carEditDto);
+        @PutMapping("/cars/{id}")
+        public Car editCar(@PathVariable Long id, @RequestBody CarDto carDto) {
+                return carService.editCar(id, carDto);
         }
 
         @DeleteMapping("/cars/{id}")
@@ -93,7 +93,7 @@ public class AdminController {
                 carService.deleteCarPackage(id);
         }
 
-        @GetMapping("/cars/orders")
+        @GetMapping("/orders")
         public List<PlacedOrder> getOrders() {
                 return carService.getOrders();
         }

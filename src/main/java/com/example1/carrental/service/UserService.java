@@ -4,11 +4,10 @@ import com.example1.carrental.domain.CreditCard;
 import com.example1.carrental.domain.Role;
 import com.example1.carrental.domain.User;
 import com.example1.carrental.dto.CreditCardDto;
-import com.example1.carrental.dto.UserEditDto;
-import com.example1.carrental.dto.UserSaveDto;
+import com.example1.carrental.dto.UserDto;
 import com.example1.carrental.exception.AssignedRoleException;
 import com.example1.carrental.exception.ExistingEntityException;
-import com.example1.carrental.mapper.UserSaveDtoMapper;
+import com.example1.carrental.mapper.UserDtoMapper;
 import com.example1.carrental.repo.CreditCardRepo;
 import com.example1.carrental.repo.RoleRepo;
 import com.example1.carrental.repo.UserRepo;
@@ -54,27 +53,27 @@ public class UserService implements UserDetailsService {
                 return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), authorities);
         }
 
-        public UserSaveDto saveUser(UserSaveDto userSaveDto) {
-                if(userRepo.findByUsername(userSaveDto.getUsername()).isPresent()) {
+        public UserDto saveUser(UserDto userDto) {
+                if(userRepo.findByUsername(userDto.getUsername()).isPresent()) {
 
                         throw new ExistingEntityException("User With Given Username Already Exists!");
                 }
-                log.info("Saving new user {} to the database", userSaveDto.getUsername());
-                userSaveDto.setPassword(passwordEncoder.encode(userSaveDto.getPassword()));
-                userRepo.save(UserSaveDtoMapper.mapToUser(userSaveDto));
-                return userSaveDto;
+                log.info("Saving new user {} to the database", userDto.getUsername());
+                userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
+                userRepo.save(UserDtoMapper.mapToUser(userDto));
+                return userDto;
         }
 
-        public User editUser(UserEditDto userEditDto) {
-                User userEdited = userRepo.findById(userEditDto.getId())
+        public User editUser(Long id, UserDto userDto) {
+                User userEdited = userRepo.findById(id)
                         .orElseThrow(() -> new UsernameNotFoundException("This User Does Not Exists!"));
-                log.info("Edition user with id {}", userEditDto.getId());
-                userEdited.setFirstName(userEditDto.getFirstName());
-                userEdited.setLastName(userEditDto.getLastName());
-                userEdited.setUsername(userEditDto.getUsername());
-                userEdited.setPassword(passwordEncoder.encode(userEditDto.getPassword()));
-                userEdited.setEmail(userEditDto.getEmail());
-                userEdited.setPhone(userEditDto.getPhone());
+                log.info("Edition user with id {}", id);
+                userEdited.setFirstName(userDto.getFirstName());
+                userEdited.setLastName(userDto.getLastName());
+                userEdited.setUsername(userDto.getUsername());
+                userEdited.setPassword(passwordEncoder.encode(userDto.getPassword()));
+                userEdited.setEmail(userDto.getEmail());
+                userEdited.setPhone(userDto.getPhone());
                 return userRepo.save(userEdited);
         }
 
