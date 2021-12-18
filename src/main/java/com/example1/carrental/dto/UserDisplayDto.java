@@ -7,8 +7,9 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 @Builder
-public class UserSaveDto {
+public class UserDisplayDto {
 
+        private Long id;
         private String firstName;
         private String lastName;
         private String username;

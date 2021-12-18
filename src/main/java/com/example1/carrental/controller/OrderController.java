@@ -1,6 +1,5 @@
 package com.example1.carrental.controller;
 
-import com.example1.carrental.domain.AccessKey;
 import com.example1.carrental.dto.AccessKeyDto;
 import com.example1.carrental.service.OrderService;
 import lombok.RequiredArgsConstructor;

@@ -2,7 +2,7 @@ package com.example1.carrental.controller;
 
 
 import com.example1.carrental.dto.CreditCardDto;
-import com.example1.carrental.dto.UserSaveDto;
+import com.example1.carrental.dto.UserDto;
 import com.example1.carrental.service.RegistrationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -13,9 +13,9 @@ public class RegistrationController {
 
         private final RegistrationService registrationService;
 
-        @PostMapping("/registration")
-        public void registerUser(@RequestBody UserSaveDto userSaveDto) {
-                registrationService.registerUser(userSaveDto);
+        @PostMapping("/registration/registerUser")
+        public void registerUser(@RequestBody UserDto userDto) {
+                registrationService.registerUser(userDto);
         }
 
         @PostMapping("/registration/addCreditCard")

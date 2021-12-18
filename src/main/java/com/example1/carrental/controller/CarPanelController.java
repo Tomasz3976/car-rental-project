@@ -22,7 +22,7 @@ public class CarPanelController {
                 return carService.getCarPackages();
         }
 
-        @GetMapping("/cars")
+        @GetMapping("/cars/all")
         public List<Car> getAllCars(@RequestParam(required = false) Integer page, Sort.Direction sort) {
                 int pageNumber = page == null || page <= 0 ? 1 : page;
                 Sort.Direction sortDirection = sort != null ? sort : Sort.Direction.ASC;

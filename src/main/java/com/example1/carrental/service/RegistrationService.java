@@ -3,11 +3,11 @@ package com.example1.carrental.service;
 import com.example1.carrental.domain.CreditCard;
 import com.example1.carrental.domain.User;
 import com.example1.carrental.dto.CreditCardDto;
-import com.example1.carrental.dto.UserSaveDto;
+import com.example1.carrental.dto.UserDto;
 import com.example1.carrental.exception.ExistingEntityException;
 import com.example1.carrental.exception.NoCreditCardException;
 import com.example1.carrental.exception.WeakPasswordException;
-import com.example1.carrental.mapper.UserSaveDtoMapper;
+import com.example1.carrental.mapper.UserDtoMapper;
 import com.example1.carrental.repo.CreditCardRepo;
 import com.example1.carrental.repo.UserRepo;
 import com.example1.carrental.security.LoggedInUser;
@@ -33,13 +33,13 @@ public class RegistrationService {
         private final LoggedInUser loggedInUser;
 
 
-        public void registerUser(UserSaveDto userSaveDto) {
+        public void registerUser(UserDto userDto) {
 
-                if (userRepo.findByUsername(userSaveDto.getUsername()).isPresent()) {
+                if (userRepo.findByUsername(userDto.getUsername()).isPresent()) {
 
                         throw new ExistingEntityException("User With Given Username Already Exists!");
 
-                } else if (!PasswordValidator.matcher(userSaveDto.getPassword()).matches()) {
+                } else if (!PasswordValidator.matcher(userDto.getPassword()).matches()) {
 
                         throw new WeakPasswordException("Password Must Contains Minimum Eight Characters," +
                                 " At Least One Uppercase Letter, One Lowercase Letter And One Number!");
@@ -47,7 +47,7 @@ public class RegistrationService {
                 } else {
 
                         log.info("Registration of new user");
-                        User user = UserSaveDtoMapper.mapToUser(userSaveDto);
+                        User user = UserDtoMapper.mapToUser(userDto);
                         user.setPassword(passwordEncoder.encode(user.getPassword()));
                         userRepo.save(user);
                         userService.addRoleToUser(user.getUsername(), "ROLE_USER");
