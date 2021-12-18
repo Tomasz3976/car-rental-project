@@ -67,12 +67,16 @@ public class CarService {
 
         public List<Car> getAllCars(Integer page, Sort.Direction sort) {
                 log.info("Fetching all cars");
-                return carRepo.findCars(PageRequest.of(page, PAGE_SIZE, Sort.by(sort, "id")));
+                int pageNumber = page == null || page <= 0 ? 1 : page;
+                Sort.Direction sortDirection = sort != null ? sort : Sort.Direction.ASC;
+                return carRepo.findCars(PageRequest.of(pageNumber - 1, PAGE_SIZE, Sort.by(sortDirection, "id")));
         }
 
         public List<Car> getAvailableCars(Integer page, Sort.Direction sort) {
                 log.info("Fetching available cars");
-                return carRepo.findAvailableCars(PageRequest.of(page, PAGE_SIZE, Sort.by(sort, "id")));
+                int pageNumber = page == null || page <= 0 ? 1 : page;
+                Sort.Direction sortDirection = sort != null ? sort : Sort.Direction.ASC;
+                return carRepo.findAvailableCars(PageRequest.of(pageNumber - 1, PAGE_SIZE, Sort.by(sortDirection, "id")));
         }
 
         public List<CarPackage> getCarPackages() {
