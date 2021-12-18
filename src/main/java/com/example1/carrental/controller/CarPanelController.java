@@ -24,16 +24,12 @@ public class CarPanelController {
 
         @GetMapping("/cars/all")
         public List<Car> getAllCars(@RequestParam(required = false) Integer page, Sort.Direction sort) {
-                int pageNumber = page == null || page <= 0 ? 1 : page;
-                Sort.Direction sortDirection = sort != null ? sort : Sort.Direction.ASC;
-                return carService.getAllCars(pageNumber - 1, sortDirection);
+                return carService.getAllCars(page, sort);
         }
 
         @GetMapping("/cars/available")
         public List<Car> getAvailableCars(@RequestParam(required = false) Integer page, Sort.Direction sort) {
-                int pageNumber = page == null || page <= 0 ? 1 : page;
-                Sort.Direction sortDirection = sort != null ? sort : Sort.Direction.ASC;
-                return carService.getAvailableCars(pageNumber - 1, sortDirection);
+                return carService.getAvailableCars(page, sort);
         }
 
 }
