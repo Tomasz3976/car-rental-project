@@ -7,6 +7,7 @@ import com.example1.carrental.dto.CreditCardDto;
 import com.example1.carrental.dto.UserDto;
 import com.example1.carrental.exception.AssignedRoleException;
 import com.example1.carrental.exception.ExistingEntityException;
+import com.example1.carrental.exception.NoCreditCardException;
 import com.example1.carrental.mapper.UserDtoMapper;
 import com.example1.carrental.repo.CreditCardRepo;
 import com.example1.carrental.repo.RoleRepo;
@@ -79,6 +80,7 @@ public class UserService implements UserDetailsService {
 
         public void deleteUser(Long id) {
                 log.info("Deleting user with id {}", id);
+                if(!userRepo.existsById(id)) throw new UsernameNotFoundException("This User Does Not Exists!");
                 userRepo.deleteById(id);
         }
 
@@ -122,6 +124,7 @@ public class UserService implements UserDetailsService {
                         .orElseThrow(() -> new UsernameNotFoundException("This User Does Not Exists!"));
 
                 if(user.getCreditCard() != null) {
+
                         throw new IllegalCallerException("User Already Has Credit Card!");
                 }
                 CreditCard card = creditCardRepo.save(mapToCreditCard(creditCardDto));
@@ -134,6 +137,7 @@ public class UserService implements UserDetailsService {
                 log.info("Deleting credit card of user {}", username);
                 User user = userRepo.findByUsername(username)
                         .orElseThrow(() -> new UsernameNotFoundException("This User Does Not Exists!"));
+                if(user.getCreditCard() == null) throw new NoCreditCardException("This User Do Not Have Credit Card!");
                 creditCardRepo.delete(user.getCreditCard());
         }
 

@@ -62,6 +62,7 @@ public class CarService {
 
         public void deleteCar(Long id) {
                 log.info("Deleting car with id {}", id);
+                if(!carRepo.existsById(id)) throw new EntityNotFoundException("This Car Does Not Exists!");
                 carRepo.deleteById(id);
         }
 
@@ -95,6 +96,7 @@ public class CarService {
 
         public void deleteCarPackage(Long id) {
                 log.info("Deleting car package with id {}", id);
+                if(!carPackageRepo.existsById(id)) throw new EntityNotFoundException("This Package Does Not Exists!");
                 carPackageRepo.deleteById(id);
         }
 
