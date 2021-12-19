@@ -88,6 +88,7 @@ class UserServiceTest {
         void itShouldDeleteUser() {
                 User user = User.builder().id(6L).build();
 
+                when(userRepo.existsById(6L)).thenReturn(true);
                 doNothing().when(userRepo).deleteById(6L);
 
                 userService.deleteUser(6L);

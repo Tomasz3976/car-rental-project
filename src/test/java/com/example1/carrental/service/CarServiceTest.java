@@ -93,6 +93,8 @@ class CarServiceTest {
         @Test
         void itShouldDeleteCar() {
                 Car car = Car.builder().id(4L).build();
+
+                when(carRepo.existsById(4L)).thenReturn(true);
                 doNothing().when(carRepo).deleteById(4L);
 
                 carService.deleteCar(4L);
@@ -110,7 +112,7 @@ class CarServiceTest {
                 cars.add(car2);
                 cars.add(car3);
 
-                when(carRepo.findCars(PageRequest.of(1, 10, Sort.by(Sort.Direction.ASC, "id"))))
+                when(carRepo.findCars(PageRequest.of(0, 10, Sort.by(Sort.Direction.ASC, "id"))))
                 .thenReturn(cars);
 
                 assertThat(carService.getAllCars(1, Sort.Direction.ASC)).hasSize(3);
@@ -151,6 +153,8 @@ class CarServiceTest {
                 CarPackage ordinary = CarPackage.builder().id(3L).packageName("Ordinary").pricePerHour(100).build();
                 CarPackage awesome = CarPackage.builder().id(4L).packageName("Awesome").pricePerHour(800).build();
 
+                when(carPackageRepo.existsById(3L)).thenReturn(true);
+                when(carPackageRepo.existsById(4L)).thenReturn(true);
                 doNothing().when(carPackageRepo).deleteById(3L);
                 doNothing().when(carPackageRepo).deleteById(4L);
 
@@ -185,7 +189,7 @@ class CarServiceTest {
                 cars.add(available3);
                 cars.add(notAvailable2);
 
-                when(carRepo.findAvailableCars(PageRequest.of(1, 10, Sort.by(Sort.Direction.ASC, "id"))))
+                when(carRepo.findAvailableCars(PageRequest.of(0, 10, Sort.by(Sort.Direction.ASC, "id"))))
                         .thenReturn(cars.stream()
                                 .filter(car -> car.getIsAvailable()).collect(Collectors.toList()));
 
