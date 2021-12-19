@@ -93,6 +93,16 @@ public class GlobalExceptionHandler {
 
         }
 
+        @ExceptionHandler(AssignedRoleException.class)
+        public ResponseEntity<Object> handleAssignedRoleException(AssignedRoleException e, WebRequest request) {
+
+                ErrorDetails errorDetails = new ErrorDetails(e.getMessage(),
+                        request.getDescription(false), ZonedDateTime.now());
+
+                return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
+
+        }
+
         @ExceptionHandler(IllegalCallerException.class)
         public ResponseEntity<Object> handleIllegalCallerException(IllegalCallerException e, WebRequest request) {
 
@@ -120,16 +130,6 @@ public class GlobalExceptionHandler {
                         request.getDescription(false), ZonedDateTime.now());
 
                 return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
-
-        }
-
-        @ExceptionHandler(AssignedRoleException.class)
-        public ResponseEntity<Object> handleAssignedRoleException(AssignedRoleException e, WebRequest request) {
-
-                ErrorDetails errorDetails = new ErrorDetails(e.getMessage(),
-                        request.getDescription(false), ZonedDateTime.now());
-
-                return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
 
         }
 
