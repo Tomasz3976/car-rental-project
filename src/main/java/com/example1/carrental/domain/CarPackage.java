@@ -7,7 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.List;
+import java.util.Collection;
 
 @Entity
 @Data
@@ -30,6 +30,6 @@ public class CarPackage {
 
         @JsonIgnore
         @OneToMany(fetch = FetchType.LAZY, mappedBy = "carPackage", cascade = CascadeType.ALL)
-        private List<Car> cars;
+        private Collection<Car> cars;
 
 }
