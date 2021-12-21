@@ -17,7 +17,7 @@ public class Car {
 
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
-        @Column(name = "car_id", unique = true, nullable = false)
+        @Column(name = "id", unique = true, nullable = false)
         private Long id;
 
         @Column(name = "registration_nr", nullable = false, length = 8)
@@ -33,9 +33,10 @@ public class Car {
         private Boolean isAvailable;
 
         @ManyToOne(fetch = FetchType.EAGER)
-        @JoinColumn(name = "car_package_id", referencedColumnName = "car_package_id", nullable = false)
+        @JoinColumn(name = "car_package_id", referencedColumnName = "id", nullable = false)
         private CarPackage carPackage;
 
         @OneToOne(cascade = CascadeType.ALL)
         private CarParameters carParameters;
+
 }

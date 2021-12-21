@@ -21,7 +21,7 @@ public class CarParameters {
         @Id
         @JsonIgnore
         @GeneratedValue(strategy = GenerationType.IDENTITY)
-        @Column(name = "car_parameters_id", unique = true, nullable = false)
+        @Column(name = "id", unique = true, nullable = false)
         private Long id;
 
         @Enumerated(EnumType.STRING)

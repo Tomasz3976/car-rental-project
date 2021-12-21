@@ -19,7 +19,7 @@ public class CarPackage {
 
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
-        @Column(name = "car_package_id", unique = true, nullable = false)
+        @Column(name = "id", unique = true, nullable = false)
         private Long id;
 
         @Column(name = "package_name", nullable = false)
