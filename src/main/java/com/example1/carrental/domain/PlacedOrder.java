@@ -18,7 +18,7 @@ public class PlacedOrder {
 
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
-        @Column(name = "placed_order_id", unique = true, nullable = false)
+        @Column(name = "id", unique = true, nullable = false)
         private Long id;
 
         @Column(name = "user_id", nullable = false)
