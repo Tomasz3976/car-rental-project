@@ -3,6 +3,7 @@ package com.example1.carrental.security;
 import com.example1.carrental.filter.CustomAuthenticationFilter;
 import com.example1.carrental.filter.CustomAuthorizationFilter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -20,11 +21,22 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 
 @Configuration
 @EnableWebSecurity
-@RequiredArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         private final UserDetailsService userDetailsService;
         private final PasswordEncoder passwordEncoder;
+        private final long expirationTime;
+        private final String secretKey;
+
+        public SecurityConfig(UserDetailsService userDetailsService,
+                              PasswordEncoder passwordEncoder,
+                              @Value("${jwt.expirationTime}") long expirationTime,
+                              @Value("${jwt.secretKey}") String secretKey) {
+                this.userDetailsService = userDetailsService;
+                this.passwordEncoder = passwordEncoder;
+                this.expirationTime = expirationTime;
+                this.secretKey = secretKey;
+        }
 
         private static final String[] AUTH_WHITELIST = {
                 "**/swagger-resources/**",
@@ -54,8 +66,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         .antMatchers("/cars/**", "/registration/**", "/orders/**", "/delivery/**").hasAnyAuthority("ROLE_USER")
                         .anyRequest().authenticated()
                         .and().logout().logoutSuccessUrl("/login");
-                http.addFilter(new CustomAuthenticationFilter(authenticationManagerBean()));
-                http.addFilterBefore(new CustomAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);
+                http.addFilter(new CustomAuthenticationFilter(authenticationManagerBean(), expirationTime, secretKey));
+                http.addFilterBefore(new CustomAuthorizationFilter(secretKey), UsernamePasswordAuthenticationFilter.class);
         }
 
 
