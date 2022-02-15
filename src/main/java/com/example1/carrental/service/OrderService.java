@@ -47,7 +47,7 @@ public class OrderService {
 
                 if (money < (long) price * hours) {
 
-                        throw new InsufficientFundsException("You do not have enough money!");
+                        throw new InsufficientFundsException("You Do Not Have Enough Money!");
 
                 } else {
 
