@@ -13,9 +13,9 @@ import com.example1.carrental.security.LoggedInUser;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
-import javax.transaction.Transactional;
 
 import static com.example1.carrental.mapper.AccessKeyDtoMapper.mapToAccessKeyDto;
 
