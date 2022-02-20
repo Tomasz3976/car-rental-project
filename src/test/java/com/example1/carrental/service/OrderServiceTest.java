@@ -25,7 +25,7 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTest {
@@ -45,60 +45,96 @@ class OrderServiceTest {
 
         @Test
         void itShouldReturnAccessKeyDto() {
-                CreditCard card = CreditCard.builder().cardNumber(7755443334559900L)
-                        .month(4).year(2023).CVV(278).accountBalance(1200L).build();
-                User user = User.builder().creditCard(card).build();
+                CreditCard card = CreditCard.builder()
+                        .cardNumber(7755443334559900L)
+                        .month(4)
+                        .year(2023)
+                        .CVV(278)
+                        .accountBalance(1200L)
+                        .build();
 
-                CarPackage build = CarPackage.builder().packageName("Luxury").pricePerHour(500).build();
+                User user = User.builder()
+                        .creditCard(card)
+                        .build();
 
-                AccessKey accessKey = AccessKey.builder().carPackage("Luxury").hours(2).build();
+                CarPackage luxury = CarPackage.builder()
+                        .packageName("Luxury")
+                        .pricePerHour(500)
+                        .build();
+
+                AccessKey accessKey = AccessKey.builder()
+                        .carPackage("Luxury")
+                        .hours(2)
+                        .build();
+
+                AccessKeyDto accessKeyDto = AccessKeyDto.builder()
+                        .carPackage("Luxury")
+                        .hours(2)
+                        .build();
+
 
                 when(loggedInUser.getUser()).thenReturn(user);
-                when(carPackageRepo.findByPackageName("Luxury")).thenReturn(Optional.of(build));
+                when(carPackageRepo.findByPackageName("Luxury")).thenReturn(Optional.of(luxury));
                 when(accessKeyRepo.save(accessKey)).thenReturn(accessKey);
 
-                try (MockedStatic<AccessKeyDtoMapper> mockedStatic = Mockito.mockStatic(AccessKeyDtoMapper.class)) {
 
-                        AccessKeyDto accessKeyDto = AccessKeyDto.builder().carPackage("Luxury").hours(2).build();
-
-                        mockedStatic.when(() -> AccessKeyDtoMapper.mapToAccessKeyDto(accessKey)).thenReturn(accessKeyDto);
-
-                        orderService.submitOrder("Luxury", 2);
-
-                        assertThat(accessKeyDto.getCarPackage()).isEqualTo("Luxury");
-                        assertThat(accessKeyDto.getHours()).isEqualTo(2);
-                        assertThat(user.getCreditCard().getAccountBalance()).isEqualTo(200L);
-                }
+                assertThat(orderService.submitOrder("Luxury", 2)).isEqualTo(accessKeyDto);
+                assertThat(user.getCreditCard().getAccountBalance()).isEqualTo(200L);
         }
 
         @Test
         void itShouldThrowEntityNotFoundException() {
-                CreditCard card = CreditCard.builder().accountBalance(0L).build();
-                User user = User.builder().username("Radoslaw").creditCard(card).build();
+                CreditCard card = CreditCard.builder()
+                        .accountBalance(0L)
+                        .build();
+
+                User user = User.builder()
+                        .username("Radoslaw")
+                        .creditCard(card)
+                        .build();
+
 
                 when(loggedInUser.getUser()).thenReturn(user);
                 when(carPackageRepo.findByPackageName(anyString())).thenThrow(EntityNotFoundException.class);
+
 
                 assertThrows(EntityNotFoundException.class, () -> orderService.submitOrder("BigCar", 3));
         }
 
         @Test
         void itShouldThrowNoCreditCardException() {
-                User user = User.builder().username("Tomasz").creditCard(null).build();
+                User user = User.builder()
+                        .username("Tomasz")
+                        .creditCard(null)
+                        .build();
+
 
                 when(loggedInUser.getUser()).thenReturn(user);
+
 
                 assertThrows(NoCreditCardException.class, () -> orderService.submitOrder("Ordinary", 2));
         }
 
         @Test
         void itShouldThrowInsufficientFundsException() {
-                CreditCard card = CreditCard.builder().accountBalance(600L).build();
-                User user = User.builder().username("Radoslaw").creditCard(card).build();
-                CarPackage luxury = CarPackage.builder().packageName("Luxury").pricePerHour(500).build();
+                CreditCard card = CreditCard.builder()
+                        .accountBalance(600L)
+                        .build();
+
+                User user = User.builder()
+                        .username("Radoslaw")
+                        .creditCard(card)
+                        .build();
+
+                CarPackage luxury = CarPackage.builder()
+                        .packageName("Luxury")
+                        .pricePerHour(500)
+                        .build();
+
 
                 when(loggedInUser.getUser()).thenReturn(user);
                 when(carPackageRepo.findByPackageName("Luxury")).thenReturn(Optional.of(luxury));
+
 
                 assertThrows(InsufficientFundsException.class, () -> orderService.submitOrder("Luxury", 2));
         }

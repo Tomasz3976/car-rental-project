@@ -46,33 +46,45 @@ class RegistrationServiceTest {
 
         @Test
         void itShouldAddCreditCardToUser() {
-                User user = User.builder().firstName("Mickey").lastName("Rourke").build();
-                CreditCardDto creditCardDto = CreditCardDto.builder().cardNumber(8888943300781111L).build();
+                User user = User.builder()
+                        .firstName("Mickey")
+                        .lastName("Rourke")
+                        .build();
+
+                CreditCardDto creditCardDto = CreditCardDto.builder()
+                        .cardNumber(8888943300781111L)
+                        .build();
+
+                CreditCard creditCard = CreditCard.builder()
+                        .cardNumber(8888943300781111L)
+                        .accountBalance(0L)
+                        .build();
+
 
                 when(loggedInUser.getUser()).thenReturn(user);
+                when(creditCardRepo.save(creditCard)).thenReturn(creditCard);
 
-                try(MockedStatic<CreditCardDtoMapper> mockedStatic = Mockito.mockStatic(CreditCardDtoMapper.class)) {
 
-                        CreditCard creditCard = CreditCard.builder().cardNumber(8888943300781111L).build();
+                registrationService.addCreditCard(creditCardDto);
 
-                        mockedStatic.when(() -> CreditCardDtoMapper.mapToCreditCard(creditCardDto)).thenReturn(creditCard);
-
-                        when(creditCardRepo.save(creditCard)).thenReturn(creditCard);
-
-                        registrationService.addCreditCard(creditCardDto);
-
-                        assertThat(user.getCreditCard()).isNotNull().hasFieldOrPropertyWithValue("cardNumber", 8888943300781111L);
-                }
+                assertThat(user.getCreditCard()).isEqualTo(creditCard);
         }
 
         @Test
         void itShouldMakeMoneyTransfer() {
-                User user = User.builder().firstName("Richard").lastName("Hammond").build();
-                CreditCard creditCard = CreditCard.builder().accountBalance(0L).build();
+                CreditCard creditCard = CreditCard.builder()
+                        .accountBalance(0L)
+                        .build();
 
-                user.setCreditCard(creditCard);
+                User user = User.builder()
+                        .firstName("Richard")
+                        .lastName("Hammond")
+                        .creditCard(creditCard)
+                        .build();
+
 
                 when(loggedInUser.getUser()).thenReturn(user);
+
 
                 registrationService.moneyTransfer(700L);
 
@@ -81,36 +93,41 @@ class RegistrationServiceTest {
 
         @Test
         void itShouldThrowExistingEntityException() {
-                UserDto userDto = UserDto.builder().username("GreenJohn78").build();
-                User user = User.builder().username("GreenJohn78").build();
+                UserDto userDto = UserDto.builder()
+                        .username("GreenJohn78")
+                        .build();
+
+                User user = User.builder()
+                        .username("GreenJohn78")
+                        .build();
+
 
                 when(userRepo.findByUsername(userDto.getUsername())).thenReturn(Optional.of(user));
+
 
                 assertThrows(ExistingEntityException.class, () -> registrationService.registerUser(userDto));
         }
 
         @Test
         void itShouldThrowWeakPasswordException() {
-                UserDto userDto = UserDto.builder().username("JohnBDP685").password("johnapple56").build();
+                UserDto userDto = UserDto.builder()
+                        .username("JohnBDP685")
+                        .password("johnapple56")
+                        .build();
+
 
                 when(userRepo.findByUsername(userDto.getUsername())).thenReturn(Optional.empty());
 
 
-                try (MockedStatic<PasswordValidator> mockedStatic = Mockito.mockStatic(PasswordValidator.class)) {
-
-                        String regex = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d]{8,}$";
-                        Pattern p = Pattern.compile(regex);
-                        Matcher m = p.matcher(userDto.getPassword());
-
-                        mockedStatic.when(() -> PasswordValidator.matcher(userDto.getPassword())).thenReturn(m);
-
-                        assertThrows(WeakPasswordException.class, () -> registrationService.registerUser(userDto));
-                }
+                assertThrows(WeakPasswordException.class, () -> registrationService.registerUser(userDto));
         }
 
         @Test
         void itShouldThrowNoCreditCardException() {
-                User user = User.builder().username("MeekMill765").creditCard(null).build();
+                User user = User.builder()
+                        .username("MeekMill765")
+                        .creditCard(null)
+                        .build();
 
                 when(loggedInUser.getUser()).thenReturn(user);
 
