@@ -7,7 +7,6 @@ import com.example1.carrental.dto.UserDto;
 import com.example1.carrental.exception.ExistingEntityException;
 import com.example1.carrental.exception.NoCreditCardException;
 import com.example1.carrental.exception.WeakPasswordException;
-import com.example1.carrental.mapper.CreditCardDtoMapper;
 import com.example1.carrental.repo.CreditCardRepo;
 import com.example1.carrental.repo.UserRepo;
 import com.example1.carrental.security.LoggedInUser;
@@ -15,14 +14,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockedStatic;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
