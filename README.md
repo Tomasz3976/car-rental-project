@@ -15,31 +15,6 @@ A Web Application that acts as a car rental company. The user can view the avail
 - JUnit 5
 - Mockito
 
-## Features
-
-### User perspective
-- Login and Registration
-- List of cars (all, available, packages)
-- Adding a credit card and money transfers
-- Ordering a car from the selected package
-- Picking up the selected car
-
-### Manager perspective
-All User features and the following operations:
-- Car operations (GET, POST)
-- User operations (GET, POST)
-- Save Role
-- Save Car Package
-- Get all orders
-
-### Admin perspective
-All Manager features and the following operations:
-- Car operations (PUT, DELETE)
-- User operations (PUT, DELETE)
-- Add and Delete user role
-- Add and Delete user credit card
-- Delete Car Package
-
 ## Requirements
 
 For building and running the application you need:
@@ -77,9 +52,50 @@ The application can be used with Swagger or Postman
 | Manager 	|  manager 	|  manager 	|
 |  Admin  	|   admin  	|   admin  	|
 
+## Explore Rest APIs
 
-## Usage
-Sample application requests:
+The app defines following CRUD APIs
+
+### For Admin:
+
+| Method | Url | Description |
+| ------ | --- | ----------- |
+| PUT    | /admin/users/{id} | Edit user |
+| DELETE | /admin/users/{id} | Delete user |
+| PUT    | /admin/users/{username}/roles | Add role to user |
+| DELETE | /admin/users/{username}/roles/{roleName} | Delete user role |
+| PUT    | /admin/users/{username}/creditCards | Add credit card to user |
+| DELETE | /admin/users/{username}/creditCards | Delete user credit card |
+| PUT    | /admin/cars/{id} | Edit car |
+| DELETE | /admin/cars/{id} | Delete car |
+| DELETE | /admin/cars/packages/{id} | Delete car package |
+
+### For Manager (admin also):
+
+| Method | Url | Description |
+| ------ | --- | ----------- |
+| GET    | /admin/users/all | Get all users |
+| POST   | /admin/users | Save new user |
+| POST   | /admin/roles | Save new role |
+| GET    | /admin/cars/{id} | Get car by id |
+| POST   | /admin/cars | Save new car |
+| POST   | /admin/cars/packages| Save new car package |
+| GET    | /admin/orders| Get all orders |
+
+### For User (admin and manager also):
+
+| Method | Url | Description |
+| ------ | --- | ----------- |
+| GET    | /cars/packages | Get all car packages |
+| GET    | /cars/all | Get all cars |
+| GET    | /cars/available | Get available cars |
+| POST   | /registration/registerUser | Register new user |
+| POST   | /registration/addCreditCard | Add credit card to logged in user |
+| PUT    | /registration/moneyTransfer | Money transfer for logged in user |
+| POST   | /orders | Place an order for given car package |
+| POST   | /delivery | Rent a car from given car package |
+
+## Sample Application Requests
 
 ### Registration of User -> "/registration/registerUser"
 
