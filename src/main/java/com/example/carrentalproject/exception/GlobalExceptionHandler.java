@@ -37,7 +37,7 @@ public class GlobalExceptionHandler {
         }
 
         @ExceptionHandler(IllegalCallerException.class)
-        public ResponseEntity<Object> handleIllegalCallerException(IllegalCallerException e, WebRequest request) {
+        public ResponseEntity<Object> handleIllegalCallerException(Exception e, WebRequest request) {
 
                 ErrorDetails errorDetails = new ErrorDetails(e.getMessage(),
                         request.getDescription(false), ZonedDateTime.now());
@@ -47,7 +47,7 @@ public class GlobalExceptionHandler {
         }
 
         @ExceptionHandler({EntityNotFoundException.class, UsernameNotFoundException.class})
-        public ResponseEntity<Object> handleNotFoundException(EntityNotFoundException e, WebRequest request) {
+        public ResponseEntity<Object> handleNotFoundException(Exception e, WebRequest request) {
 
                 ErrorDetails errorDetails = new ErrorDetails(e.getMessage(),
                         request.getDescription(false), ZonedDateTime.now());
