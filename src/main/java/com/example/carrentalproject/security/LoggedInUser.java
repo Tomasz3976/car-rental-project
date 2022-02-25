@@ -1,7 +1,7 @@
 package com.example.carrentalproject.security;
 
 import com.example.carrentalproject.domain.User;
-import com.example.carrentalproject.repo.UserRepo;
+import com.example.carrentalproject.repo.UserRepository;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -9,17 +9,17 @@ import org.springframework.stereotype.Service;
 @Service
 public class LoggedInUser {
 
-        private final UserRepo userRepo;
+        private final UserRepository userRepository;
 
-        public LoggedInUser(UserRepo userRepo) {
-                this.userRepo = userRepo;
+        public LoggedInUser(UserRepository userRepository) {
+                this.userRepository = userRepository;
         }
 
         public User getUser() {
 
                 Authentication principal = SecurityContextHolder.getContext().getAuthentication();
                 String username = principal.getName();
-                return userRepo.findByUsername(username).orElseThrow();
+                return userRepository.findByUsername(username).orElseThrow();
 
         }
 

@@ -8,9 +8,9 @@ import com.example.carrentalproject.domain.User;
 import com.example.carrentalproject.dto.AccessKeyDto;
 import com.example.carrentalproject.exception.InsufficientFundsException;
 import com.example.carrentalproject.exception.NoCreditCardException;
-import com.example.carrentalproject.repo.AccessKeyRepo;
-import com.example.carrentalproject.repo.CarPackageRepo;
-import com.example.carrentalproject.repo.OrderRepo;
+import com.example.carrentalproject.repo.AccessKeyRepository;
+import com.example.carrentalproject.repo.CarPackageRepository;
+import com.example.carrentalproject.repo.OrderRepository;
 import com.example.carrentalproject.security.LoggedInUser;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -33,16 +33,16 @@ import static org.mockito.Mockito.when;
 class OrderServiceTest {
 
         @Mock
-        CarPackageRepo carPackageRepo;
+        CarPackageRepository carPackageRepository;
 
         @Mock
-        AccessKeyRepo accessKeyRepo;
+        AccessKeyRepository accessKeyRepository;
 
         @Mock
         LoggedInUser loggedInUser;
 
         @Mock
-        OrderRepo orderRepo;
+        OrderRepository orderRepository;
 
         @InjectMocks
         OrderService orderService;
@@ -84,7 +84,7 @@ class OrderServiceTest {
                 orders.add(order4);
 
 
-                when(orderRepo.findAll()).thenReturn(orders);
+                when(orderRepository.findAll()).thenReturn(orders);
 
 
                 Assertions.assertThat(orderService.getOrders()).isEqualTo(orders);
@@ -121,8 +121,8 @@ class OrderServiceTest {
 
 
                 when(loggedInUser.getUser()).thenReturn(user);
-                when(carPackageRepo.findByPackageName("Luxury")).thenReturn(Optional.of(luxury));
-                when(accessKeyRepo.save(accessKey)).thenReturn(accessKey);
+                when(carPackageRepository.findByPackageName("Luxury")).thenReturn(Optional.of(luxury));
+                when(accessKeyRepository.save(accessKey)).thenReturn(accessKey);
 
 
                 assertThat(orderService.submitOrder("Luxury", 2)).isEqualTo(accessKeyDto);
@@ -142,7 +142,7 @@ class OrderServiceTest {
 
 
                 when(loggedInUser.getUser()).thenReturn(user);
-                when(carPackageRepo.findByPackageName(anyString())).thenThrow(EntityNotFoundException.class);
+                when(carPackageRepository.findByPackageName(anyString())).thenThrow(EntityNotFoundException.class);
 
 
                 assertThrows(EntityNotFoundException.class, () -> orderService.submitOrder("BigCar", 3));
@@ -180,7 +180,7 @@ class OrderServiceTest {
 
 
                 when(loggedInUser.getUser()).thenReturn(user);
-                when(carPackageRepo.findByPackageName("Luxury")).thenReturn(Optional.of(luxury));
+                when(carPackageRepository.findByPackageName("Luxury")).thenReturn(Optional.of(luxury));
 
 
                 assertThrows(InsufficientFundsException.class, () -> orderService.submitOrder("Luxury", 2));

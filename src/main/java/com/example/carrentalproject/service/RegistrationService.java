@@ -5,12 +5,12 @@ import com.example.carrentalproject.domain.User;
 import com.example.carrentalproject.dto.CreditCardDto;
 import com.example.carrentalproject.dto.UserDto;
 import com.example.carrentalproject.mapper.UserDtoMapper;
-import com.example.carrentalproject.repo.CreditCardRepo;
+import com.example.carrentalproject.repo.CreditCardRepository;
 import com.example.carrentalproject.security.LoggedInUser;
 import com.example.carrentalproject.exception.ExistingEntityException;
 import com.example.carrentalproject.exception.NoCreditCardException;
 import com.example.carrentalproject.exception.WeakPasswordException;
-import com.example.carrentalproject.repo.UserRepo;
+import com.example.carrentalproject.repo.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -25,16 +25,16 @@ import static com.example.carrentalproject.mapper.CreditCardDtoMapper.mapToCredi
 @Slf4j
 public class RegistrationService {
 
-        private final UserRepo userRepo;
+        private final UserRepository userRepository;
         private final PasswordEncoder passwordEncoder;
         private final UserService userService;
-        private final CreditCardRepo creditCardRepo;
+        private final CreditCardRepository creditCardRepository;
         private final LoggedInUser loggedInUser;
 
 
         public void registerUser(UserDto userDto) {
 
-                if (userRepo.findByUsername(userDto.getUsername()).isPresent()) {
+                if (userRepository.findByUsername(userDto.getUsername()).isPresent()) {
 
                         throw new ExistingEntityException("User With Given Username Already Exists!");
 
@@ -48,7 +48,7 @@ public class RegistrationService {
                         log.info("Registration of new user");
                         User user = UserDtoMapper.mapToUser(userDto);
                         user.setPassword(passwordEncoder.encode(user.getPassword()));
-                        userRepo.save(user);
+                        userRepository.save(user);
                         userService.addRoleToUser(user.getUsername(), "ROLE_USER");
 
                 }
@@ -60,10 +60,10 @@ public class RegistrationService {
                 User user = loggedInUser.getUser();
 
                 if(user.getCreditCard() != null) throw new IllegalCallerException("You Already Have Credit Card!");
-                CreditCard card = creditCardRepo.save(mapToCreditCard(creditCardDto));
+                CreditCard card = creditCardRepository.save(mapToCreditCard(creditCardDto));
                 user.setCreditCard(card);
                 card.setUser(user);
-                userRepo.save(user);
+                userRepository.save(user);
         }
 
         public void moneyTransfer(Long moneyAmount) {
@@ -79,7 +79,7 @@ public class RegistrationService {
                         log.info("Transfer for the amount of {}", moneyAmount);
                         CreditCard creditCard = user.getCreditCard();
                         creditCard.setAccountBalance(creditCard.getAccountBalance() + moneyAmount);
-                        userRepo.save(user);
+                        userRepository.save(user);
 
                 }
         }

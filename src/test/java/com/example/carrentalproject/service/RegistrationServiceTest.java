@@ -7,8 +7,8 @@ import com.example.carrentalproject.dto.UserDto;
 import com.example.carrentalproject.exception.ExistingEntityException;
 import com.example.carrentalproject.exception.NoCreditCardException;
 import com.example.carrentalproject.exception.WeakPasswordException;
-import com.example.carrentalproject.repo.CreditCardRepo;
-import com.example.carrentalproject.repo.UserRepo;
+import com.example.carrentalproject.repo.CreditCardRepository;
+import com.example.carrentalproject.repo.UserRepository;
 import com.example.carrentalproject.security.LoggedInUser;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -26,10 +26,10 @@ import static org.mockito.Mockito.when;
 class RegistrationServiceTest {
 
         @Mock
-        UserRepo userRepo;
+        UserRepository userRepository;
 
         @Mock
-        CreditCardRepo creditCardRepo;
+        CreditCardRepository creditCardRepository;
 
         @Mock
         LoggedInUser loggedInUser;
@@ -56,7 +56,7 @@ class RegistrationServiceTest {
 
 
                 when(loggedInUser.getUser()).thenReturn(user);
-                when(creditCardRepo.save(creditCard)).thenReturn(creditCard);
+                when(creditCardRepository.save(creditCard)).thenReturn(creditCard);
 
 
                 registrationService.addCreditCard(creditCardDto);
@@ -96,7 +96,7 @@ class RegistrationServiceTest {
                         .build();
 
 
-                when(userRepo.findByUsername(userDto.getUsername())).thenReturn(Optional.of(user));
+                when(userRepository.findByUsername(userDto.getUsername())).thenReturn(Optional.of(user));
 
 
                 assertThrows(ExistingEntityException.class, () -> registrationService.registerUser(userDto));
@@ -110,7 +110,7 @@ class RegistrationServiceTest {
                         .build();
 
 
-                when(userRepo.findByUsername(userDto.getUsername())).thenReturn(Optional.empty());
+                when(userRepository.findByUsername(userDto.getUsername())).thenReturn(Optional.empty());
 
 
                 assertThrows(WeakPasswordException.class, () -> registrationService.registerUser(userDto));

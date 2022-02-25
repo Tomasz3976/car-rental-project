@@ -7,9 +7,9 @@ import com.example.carrentalproject.dto.CreditCardDto;
 import com.example.carrentalproject.dto.UserDto;
 import com.example.carrentalproject.exception.AssignedRoleException;
 import com.example.carrentalproject.exception.ExistingEntityException;
-import com.example.carrentalproject.repo.CreditCardRepo;
-import com.example.carrentalproject.repo.RoleRepo;
-import com.example.carrentalproject.repo.UserRepo;
+import com.example.carrentalproject.repo.CreditCardRepository;
+import com.example.carrentalproject.repo.RoleRepository;
+import com.example.carrentalproject.repo.UserRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -34,13 +34,13 @@ import static org.mockito.Mockito.when;
 class UserServiceTest {
 
         @Mock
-        UserRepo userRepo;
+        UserRepository userRepository;
 
         @Mock
-        RoleRepo roleRepo;
+        RoleRepository roleRepository;
 
         @Mock
-        CreditCardRepo creditCardRepo;
+        CreditCardRepository creditCardRepository;
 
         @Mock
         PasswordEncoder passwordEncoder;
@@ -70,8 +70,8 @@ class UserServiceTest {
                         .build();
 
 
-                when(userRepo.findByUsername("sebix")).thenReturn(Optional.empty());
-                when(userRepo.save(user)).thenReturn(user);
+                when(userRepository.findByUsername("sebix")).thenReturn(Optional.empty());
+                when(userRepository.save(user)).thenReturn(user);
 
 
                 userService.saveUser(userDto);
@@ -93,8 +93,8 @@ class UserServiceTest {
                         .build();
 
 
-                when(userRepo.findById(id)).thenReturn(Optional.of(user));
-                when(userRepo.save(user)).thenReturn(user);
+                when(userRepository.findById(id)).thenReturn(Optional.of(user));
+                when(userRepository.save(user)).thenReturn(user);
 
 
                 Assertions.assertThat(userService.editUser(id, userDto)).isEqualTo(user);
@@ -107,13 +107,13 @@ class UserServiceTest {
                         .build();
 
 
-                when(userRepo.existsById(6L)).thenReturn(true);
-                doNothing().when(userRepo).deleteById(6L);
+                when(userRepository.existsById(6L)).thenReturn(true);
+                doNothing().when(userRepository).deleteById(6L);
 
 
                 userService.deleteUser(6L);
 
-                verify(userRepo, times(1)).deleteById(6L);
+                verify(userRepository, times(1)).deleteById(6L);
         }
 
         @Test
@@ -123,8 +123,8 @@ class UserServiceTest {
                         .build();
 
 
-                when(roleRepo.findByName("ROLE_MANAGER")).thenReturn(Optional.empty());
-                when(roleRepo.save(role)).thenReturn(role);
+                when(roleRepository.findByName("ROLE_MANAGER")).thenReturn(Optional.empty());
+                when(roleRepository.save(role)).thenReturn(role);
 
 
                 Assertions.assertThat(userService.saveRole(role)).isEqualTo(role);
@@ -145,9 +145,9 @@ class UserServiceTest {
                         .build();
 
 
-                when(userRepo.findByUsername("pablo")).thenReturn(Optional.of(user));
-                when(roleRepo.findByName("ROLE_ADMIN")).thenReturn(Optional.of(role));
-                when(userRepo.save(user)).thenReturn(user);
+                when(userRepository.findByUsername("pablo")).thenReturn(Optional.of(user));
+                when(roleRepository.findByName("ROLE_ADMIN")).thenReturn(Optional.of(role));
+                when(userRepository.save(user)).thenReturn(user);
 
 
                 userService.addRoleToUser("pablo", "ROLE_ADMIN");
@@ -170,9 +170,9 @@ class UserServiceTest {
                         .build();
 
 
-                when(userRepo.findByUsername("Kamilek")).thenReturn(Optional.of(user));
-                when(roleRepo.findByName("ROLE_USER")).thenReturn(Optional.of(role));
-                when(userRepo.save(user)).thenReturn(user);
+                when(userRepository.findByUsername("Kamilek")).thenReturn(Optional.of(user));
+                when(roleRepository.findByName("ROLE_USER")).thenReturn(Optional.of(role));
+                when(userRepository.save(user)).thenReturn(user);
 
 
                 userService.addRoleToUser("Kamilek", "ROLE_USER");
@@ -200,9 +200,9 @@ class UserServiceTest {
                         .build();
 
 
-                when(userRepo.findByUsername("niceUser45")).thenReturn(Optional.of(user));
-                when(creditCardRepo.save(creditCard)).thenReturn(creditCard);
-                when(userRepo.save(user)).thenReturn(user);
+                when(userRepository.findByUsername("niceUser45")).thenReturn(Optional.of(user));
+                when(creditCardRepository.save(creditCard)).thenReturn(creditCard);
+                when(userRepository.save(user)).thenReturn(user);
 
 
                 userService.addCreditCardToUser("niceUser45", creditCardDto);
@@ -227,13 +227,13 @@ class UserServiceTest {
                         .build();
 
 
-                when(userRepo.findByUsername("Shell89")).thenReturn(Optional.of(user));
-                when(creditCardRepo.save(creditCard)).thenReturn(creditCard);
+                when(userRepository.findByUsername("Shell89")).thenReturn(Optional.of(user));
+                when(creditCardRepository.save(creditCard)).thenReturn(creditCard);
 
 
                 userService.addCreditCardToUser("Shell89", creditCardDto);
                 userService.deleteUserCreditCard("Shell89");
-                verify(creditCardRepo, times(1)).delete(user.getCreditCard());
+                verify(creditCardRepository, times(1)).delete(user.getCreditCard());
 
         }
 
@@ -248,7 +248,7 @@ class UserServiceTest {
                         .build();
 
 
-                when(userRepo.findByUsername("Flick")).thenReturn(Optional.of(user));
+                when(userRepository.findByUsername("Flick")).thenReturn(Optional.of(user));
 
 
                 assertThrows(ExistingEntityException.class, () -> userService.saveUser(userDto));
@@ -265,7 +265,7 @@ class UserServiceTest {
                         .build();
 
 
-                when(roleRepo.findByName("ROLE_VISITOR")).thenReturn(Optional.of(role2));
+                when(roleRepository.findByName("ROLE_VISITOR")).thenReturn(Optional.of(role2));
 
 
                 assertThrows(ExistingEntityException.class, () -> userService.saveRole(role));
@@ -283,8 +283,8 @@ class UserServiceTest {
                         .build();
 
 
-                when(userRepo.findByUsername("Zbyszek")).thenReturn(Optional.of(user));
-                when(roleRepo.findByName("ROLE_USER")).thenReturn(Optional.of(role));
+                when(userRepository.findByUsername("Zbyszek")).thenReturn(Optional.of(user));
+                when(roleRepository.findByName("ROLE_USER")).thenReturn(Optional.of(role));
 
 
                 assertThrows(AssignedRoleException.class, () -> userService.addRoleToUser("Zbyszek", "ROLE_USER"));
@@ -325,7 +325,7 @@ class UserServiceTest {
                 users.add(user3);
 
 
-                when(userRepo.findAll()).thenReturn(users);
+                when(userRepository.findAll()).thenReturn(users);
 
 
                 Assertions.assertThat(userService.getUsers()).isEqualTo(users);

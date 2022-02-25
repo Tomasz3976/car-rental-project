@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
-public interface CarRepo extends JpaRepository<Car, Long> {
+public interface CarRepository extends JpaRepository<Car, Long> {
 
         @Query("Select c From Car c")
         List<Car> findCars(Pageable page);

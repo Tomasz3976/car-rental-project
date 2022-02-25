@@ -6,12 +6,12 @@ import com.example.carrentalproject.domain.PlacedOrder;
 import com.example.carrentalproject.domain.User;
 import com.example.carrentalproject.dto.AccessKeyDto;
 import com.example.carrentalproject.exception.ExistingOrderException;
-import com.example.carrentalproject.repo.CarPackageRepo;
-import com.example.carrentalproject.repo.OrderRepo;
+import com.example.carrentalproject.repo.CarPackageRepository;
+import com.example.carrentalproject.repo.OrderRepository;
 import com.example.carrentalproject.security.LoggedInUser;
 import com.example.carrentalproject.exception.InsufficientFundsException;
 import com.example.carrentalproject.exception.NoCreditCardException;
-import com.example.carrentalproject.repo.AccessKeyRepo;
+import com.example.carrentalproject.repo.AccessKeyRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -30,14 +30,14 @@ import static com.example.carrentalproject.mapper.AccessKeyDtoMapper.mapToAccess
 public class OrderService {
 
         private final Long ID = null;
-        private final CarPackageRepo carPackageRepo;
-        private final OrderRepo orderRepo;
-        private final AccessKeyRepo accessKeyRepo;
+        private final CarPackageRepository carPackageRepository;
+        private final OrderRepository orderRepository;
+        private final AccessKeyRepository accessKeyRepository;
         private final LoggedInUser loggedInUser;
 
         public List<PlacedOrder> getOrders() {
                 log.info("Fetching all orders");
-                return orderRepo.findAll();
+                return orderRepository.findAll();
         }
 
         public AccessKeyDto submitOrder(String carPackage, Integer hours) {
@@ -49,7 +49,7 @@ public class OrderService {
                 if(user.getAccessKey() != null) throw new ExistingOrderException("You Have Already Placed An Order!");
 
                 Long money = user.getCreditCard().getAccountBalance();
-                CarPackage carPackageSearch = carPackageRepo.findByPackageName(carPackage)
+                CarPackage carPackageSearch = carPackageRepository.findByPackageName(carPackage)
                         .orElseThrow(() -> new EntityNotFoundException("This Package Does Not Exists!"));
                 Integer price = carPackageSearch.getPricePerHour();
 
@@ -63,7 +63,7 @@ public class OrderService {
 
                         user.getCreditCard().setAccountBalance(money - (long) price * hours);
                         accessKey = new AccessKey(ID, carPackage, hours, null);
-                        accessKeyRepo.save(accessKey);
+                        accessKeyRepository.save(accessKey);
                         user.setAccessKey(accessKey);
                         accessKey.setUser(user);
 
