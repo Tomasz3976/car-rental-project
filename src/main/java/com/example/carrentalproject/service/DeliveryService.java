@@ -4,12 +4,12 @@ import com.example.carrentalproject.domain.Car;
 import com.example.carrentalproject.domain.PlacedOrder;
 import com.example.carrentalproject.domain.User;
 import com.example.carrentalproject.exception.UnavailableCarException;
-import com.example.carrentalproject.repo.CarRepo;
-import com.example.carrentalproject.repo.OrderRepo;
+import com.example.carrentalproject.repo.CarRepository;
+import com.example.carrentalproject.repo.OrderRepository;
 import com.example.carrentalproject.security.LoggedInUser;
 import com.example.carrentalproject.exception.InvalidPackageException;
 import com.example.carrentalproject.exception.NoAccessKeyException;
-import com.example.carrentalproject.repo.AccessKeyRepo;
+import com.example.carrentalproject.repo.AccessKeyRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -25,15 +25,15 @@ import java.time.LocalDateTime;
 public class DeliveryService {
 
         public static final Long ID = null;
-        private final CarRepo carRepo;
-        private final OrderRepo orderRepo;
-        private final AccessKeyRepo accessKeyRepo;
+        private final CarRepository carRepository;
+        private final OrderRepository orderRepository;
+        private final AccessKeyRepository accessKeyRepository;
         private final LoggedInUser loggedInUser;
 
 
         public Car pickUpTheCar(Long carId) {
 
-                Car car = carRepo.findById(carId)
+                Car car = carRepository.findById(carId)
                         .orElseThrow(() -> new EntityNotFoundException("Car With This ID Does Not Exists!"));
                 User user = loggedInUser.getUser();
 
@@ -56,12 +56,12 @@ public class DeliveryService {
                 } else {
 
 
-                        accessKeyRepo.delete(user.getAccessKey());
+                        accessKeyRepository.delete(user.getAccessKey());
                         car.setIsAvailable(false);
                         LocalDateTime start = LocalDateTime.now();
                         LocalDateTime end = LocalDateTime.now().plusHours(user.getAccessKey().getHours());
                         PlacedOrder order = new PlacedOrder(ID, user.getId(), car.getId(), car.getBrand(), car.getModel(), start, end);
-                        orderRepo.save(order);
+                        orderRepository.save(order);
 
                         log.info("You rented a car, have a nice trip!");
 

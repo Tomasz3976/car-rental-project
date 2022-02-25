@@ -8,9 +8,9 @@ import com.example.carrentalproject.domain.User;
 import com.example.carrentalproject.exception.InvalidPackageException;
 import com.example.carrentalproject.exception.NoAccessKeyException;
 import com.example.carrentalproject.exception.UnavailableCarException;
-import com.example.carrentalproject.repo.AccessKeyRepo;
-import com.example.carrentalproject.repo.CarRepo;
-import com.example.carrentalproject.repo.OrderRepo;
+import com.example.carrentalproject.repo.AccessKeyRepository;
+import com.example.carrentalproject.repo.CarRepository;
+import com.example.carrentalproject.repo.OrderRepository;
 import com.example.carrentalproject.security.LoggedInUser;
 
 import org.junit.jupiter.api.Test;
@@ -20,6 +20,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import javax.persistence.EntityNotFoundException;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -31,13 +32,13 @@ import static org.mockito.Mockito.when;
 class DeliveryServiceTest {
 
         @Mock
-        CarRepo carRepo;
+        CarRepository carRepository;
 
         @Mock
-        OrderRepo orderRepo;
+        OrderRepository orderRepository;
 
         @Mock
-        AccessKeyRepo accessKeyRepo;
+        AccessKeyRepository accessKeyRepository;
 
         @Mock
         LoggedInUser loggedInUser;
@@ -72,17 +73,10 @@ class DeliveryServiceTest {
                         .accessKey(accessKey)
                         .build();
 
-                PlacedOrder placedOrder = PlacedOrder.builder()
-                        .userId(user.getId())
-                        .carId(car.getId())
-                        .brand(car.getBrand())
-                        .model(car.getModel())
-                        .build();
 
-
-                when(carRepo.findById(1L)).thenReturn(Optional.of(car));
+                when(carRepository.findById(1L)).thenReturn(Optional.of(car));
                 when(loggedInUser.getUser()).thenReturn(user);
-                doNothing().when(accessKeyRepo).delete(user.getAccessKey());
+                doNothing().when(accessKeyRepository).delete(user.getAccessKey());
 
 
                 assertThat(deliveryService.pickUpTheCar(1L)).isEqualTo(car);
@@ -91,7 +85,7 @@ class DeliveryServiceTest {
 
         @Test
         void itShouldThrowEntityNotFoundException() {
-                when(carRepo.findById(1L)).thenReturn(Optional.empty());
+                when(carRepository.findById(1L)).thenReturn(Optional.empty());
 
                 assertThrows(EntityNotFoundException.class, () -> deliveryService.pickUpTheCar(1L));
         }
@@ -110,7 +104,7 @@ class DeliveryServiceTest {
                         .build();
 
 
-                when(carRepo.findById(1L)).thenReturn(Optional.of(car));
+                when(carRepository.findById(1L)).thenReturn(Optional.of(car));
                 when(loggedInUser.getUser()).thenReturn(user);
 
 
@@ -142,7 +136,7 @@ class DeliveryServiceTest {
                         .build();
 
 
-                when(carRepo.findById(3L)).thenReturn(Optional.of(car));
+                when(carRepository.findById(3L)).thenReturn(Optional.of(car));
                 when(loggedInUser.getUser()).thenReturn(user);
 
 
@@ -175,7 +169,7 @@ class DeliveryServiceTest {
                         .build();
 
 
-                when(carRepo.findById(2L)).thenReturn(Optional.of(car));
+                when(carRepository.findById(2L)).thenReturn(Optional.of(car));
                 when(loggedInUser.getUser()).thenReturn(user);
 
 

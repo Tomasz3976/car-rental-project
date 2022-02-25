@@ -22,37 +22,37 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-class CarRepoTest {
+class CarRepositoryTest {
 
         @Autowired
-        private CarRepo carRepo;
+        private CarRepository carRepository;
 
         @Autowired
-        private CarPackageRepo carPackageRepo;
+        private CarPackageRepository carPackageRepository;
 
         @BeforeEach
         void setUp() {
                 CarPackage sporty = new CarPackage(null, "Sporty", 300, new ArrayList<>());
 
-                carPackageRepo.save(sporty);
+                carPackageRepository.save(sporty);
 
                 Car car = new Car(null, "RSA45362", "Audi", "S6", true, sporty,
                         new CarParameters(null, FuelType.PETROL, GearBoxType.AUTOMATIC, 5, 5, true));
                         sporty.getCars().add(car);
-                carRepo.save(car);
+                carRepository.save(car);
         }
 
         @AfterEach
         void tearDown() {
-                carRepo.deleteAll();
+                carRepository.deleteAll();
         }
 
         @Test
         void itShouldReturnAvailableCars() {
 
-                List<Car> cars = carRepo.findCars(PageRequest.of(1, 20, Sort.by(Sort.Direction.ASC, "id")));
+                List<Car> cars = carRepository.findCars(PageRequest.of(1, 20, Sort.by(Sort.Direction.ASC, "id")));
 
-                assertThat(carRepo.findAvailableCars(PageRequest.of(1, 20, Sort.by(Sort.Direction.ASC, "id"))))
+                assertThat(carRepository.findAvailableCars(PageRequest.of(1, 20, Sort.by(Sort.Direction.ASC, "id"))))
                         .isEqualTo(cars.stream()
                                 .filter(car -> car.getIsAvailable().equals(true))
                                 .collect(Collectors.toList()));

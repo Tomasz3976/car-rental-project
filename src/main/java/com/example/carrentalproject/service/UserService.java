@@ -5,13 +5,13 @@ import com.example.carrentalproject.domain.Role;
 import com.example.carrentalproject.domain.User;
 import com.example.carrentalproject.dto.CreditCardDto;
 import com.example.carrentalproject.mapper.UserDtoMapper;
-import com.example.carrentalproject.repo.CreditCardRepo;
-import com.example.carrentalproject.repo.RoleRepo;
+import com.example.carrentalproject.repo.CreditCardRepository;
+import com.example.carrentalproject.repo.RoleRepository;
 import com.example.carrentalproject.dto.UserDto;
 import com.example.carrentalproject.exception.AssignedRoleException;
 import com.example.carrentalproject.exception.ExistingEntityException;
 import com.example.carrentalproject.exception.NoCreditCardException;
-import com.example.carrentalproject.repo.UserRepo;
+import com.example.carrentalproject.repo.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -35,14 +35,14 @@ import static com.example.carrentalproject.mapper.CreditCardDtoMapper.mapToCredi
 @Slf4j
 public class UserService implements UserDetailsService {
 
-        private final UserRepo userRepo;
-        private final RoleRepo roleRepo;
-        private final CreditCardRepo creditCardRepo;
+        private final UserRepository userRepository;
+        private final RoleRepository roleRepository;
+        private final CreditCardRepository creditCardRepository;
         private final PasswordEncoder passwordEncoder;
 
         @Override
         public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-                User user = userRepo.findByUsername(username)
+                User user = userRepository.findByUsername(username)
                         .orElseThrow(() -> new UsernameNotFoundException("Username Not Found!"));
 
                 log.info("User found in the database: {}", username);
@@ -55,18 +55,18 @@ public class UserService implements UserDetailsService {
         }
 
         public UserDto saveUser(UserDto userDto) {
-                if(userRepo.findByUsername(userDto.getUsername()).isPresent()) {
+                if(userRepository.findByUsername(userDto.getUsername()).isPresent()) {
 
                         throw new ExistingEntityException("User With Given Username Already Exists!");
                 }
                 log.info("Saving new user {} to the database", userDto.getUsername());
                 userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
-                userRepo.save(UserDtoMapper.mapToUser(userDto));
+                userRepository.save(UserDtoMapper.mapToUser(userDto));
                 return userDto;
         }
 
         public User editUser(Long id, UserDto userDto) {
-                User userEdited = userRepo.findById(id)
+                User userEdited = userRepository.findById(id)
                         .orElseThrow(() -> new UsernameNotFoundException("This User Does Not Exists!"));
                 log.info("Edition user with id {}", id);
                 userEdited.setFirstName(userDto.getFirstName());
@@ -75,29 +75,29 @@ public class UserService implements UserDetailsService {
                 userEdited.setPassword(passwordEncoder.encode(userDto.getPassword()));
                 userEdited.setEmail(userDto.getEmail());
                 userEdited.setPhone(userDto.getPhone());
-                return userRepo.save(userEdited);
+                return userRepository.save(userEdited);
         }
 
         public void deleteUser(Long id) {
                 log.info("Deleting user with id {}", id);
-                if(!userRepo.existsById(id)) throw new UsernameNotFoundException("This User Does Not Exists!");
-                userRepo.deleteById(id);
+                if(!userRepository.existsById(id)) throw new UsernameNotFoundException("This User Does Not Exists!");
+                userRepository.deleteById(id);
         }
 
         public Role saveRole(Role role) {
                 log.info("Saving new role {} to the database", role.getName());
-                if(roleRepo.findByName(role.getName()).isPresent()) {
+                if(roleRepository.findByName(role.getName()).isPresent()) {
 
                         throw new ExistingEntityException("Role With Given Name Already Exists!");
                 }
-                return roleRepo.save(role);
+                return roleRepository.save(role);
         }
 
         public User addRoleToUser(String username, String roleName) {
                 log.info("Adding role {} to user {}", roleName, username);
-                User user = userRepo.findByUsername(username)
+                User user = userRepository.findByUsername(username)
                         .orElseThrow(() -> new UsernameNotFoundException("This User Does Not Exists!"));
-                Role role = roleRepo.findByName(roleName)
+                Role role = roleRepository.findByName(roleName)
                         .orElseThrow(() -> new EntityNotFoundException("This Role Does Not Exists!"));
                 if(user.getRoles().contains(role)) {
 
@@ -105,14 +105,14 @@ public class UserService implements UserDetailsService {
                 }
                 user.getRoles().add(role);
                 role.getUsers().add(user);
-                return userRepo.save(user);
+                return userRepository.save(user);
         }
 
         public void deleteUserRole(String username, String roleName) {
                 log.info("Deleting role {} of user {}", roleName, username);
-                User user = userRepo.findByUsername(username)
+                User user = userRepository.findByUsername(username)
                         .orElseThrow(() -> new UsernameNotFoundException("This User Does Not Exists!"));
-                Role role = roleRepo.findByName(roleName)
+                Role role = roleRepository.findByName(roleName)
                         .orElseThrow(() -> new EntityNotFoundException("This Role Does Not Exists!"));
                 user.getRoles().remove(role);
                 role.getUsers().remove(user);
@@ -120,30 +120,30 @@ public class UserService implements UserDetailsService {
 
         public User addCreditCardToUser(String username, CreditCardDto creditCardDto) {
                 log.info("Adding credit card to user {}", username);
-                User user = userRepo.findByUsername(username)
+                User user = userRepository.findByUsername(username)
                         .orElseThrow(() -> new UsernameNotFoundException("This User Does Not Exists!"));
 
                 if(user.getCreditCard() != null) {
 
                         throw new IllegalCallerException("User Already Has Credit Card!");
                 }
-                CreditCard card = creditCardRepo.save(mapToCreditCard(creditCardDto));
+                CreditCard card = creditCardRepository.save(mapToCreditCard(creditCardDto));
                 user.setCreditCard(card);
                 card.setUser(user);
-                return userRepo.save(user);
+                return userRepository.save(user);
         }
 
         public void deleteUserCreditCard(String username) {
                 log.info("Deleting credit card of user {}", username);
-                User user = userRepo.findByUsername(username)
+                User user = userRepository.findByUsername(username)
                         .orElseThrow(() -> new UsernameNotFoundException("This User Does Not Exists!"));
                 if(user.getCreditCard() == null) throw new NoCreditCardException("This User Do Not Have Credit Card!");
-                creditCardRepo.delete(user.getCreditCard());
+                creditCardRepository.delete(user.getCreditCard());
         }
 
         public List<User> getUsers() {
                 log.info("Fetching all users");
-                return userRepo.findAll();
+                return userRepository.findAll();
         }
 
 }

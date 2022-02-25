@@ -2,13 +2,11 @@ package com.example.carrentalproject.service;
 
 import com.example.carrentalproject.domain.Car;
 import com.example.carrentalproject.domain.CarPackage;
-import com.example.carrentalproject.domain.PlacedOrder;
 import com.example.carrentalproject.dto.CarDto;
 import com.example.carrentalproject.dto.CarPackageDto;
 import com.example.carrentalproject.exception.ExistingEntityException;
-import com.example.carrentalproject.repo.CarPackageRepo;
-import com.example.carrentalproject.repo.CarRepo;
-import com.example.carrentalproject.repo.OrderRepo;
+import com.example.carrentalproject.repo.CarPackageRepository;
+import com.example.carrentalproject.repo.CarRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -36,10 +34,10 @@ import static org.mockito.Mockito.when;
 class CarServiceTest {
 
         @Mock
-        CarRepo carRepo;
+        CarRepository carRepository;
 
         @Mock
-        CarPackageRepo carPackageRepo;
+        CarPackageRepository carPackageRepository;
 
         @InjectMocks
         CarService carService;
@@ -47,7 +45,7 @@ class CarServiceTest {
 
         @Test()
         void itShouldReturnAnEmptyInstanceOfCar() {
-                when(carRepo.findById(anyLong())).thenReturn(Optional.of(new Car()));
+                when(carRepository.findById(anyLong())).thenReturn(Optional.of(new Car()));
 
                 Assertions.assertThat(carService.getCar(1L)).hasAllNullFieldsOrProperties();
         }
@@ -70,8 +68,8 @@ class CarServiceTest {
                         .build();
 
 
-                when(carPackageRepo.findByPackageName("Luxury")).thenReturn(Optional.of(luxury));
-                when(carRepo.save(mapped)).thenReturn(mapped);
+                when(carPackageRepository.findByPackageName("Luxury")).thenReturn(Optional.of(luxury));
+                when(carRepository.save(mapped)).thenReturn(mapped);
 
 
                 Car saved = carService.saveCar(carDto, "Luxury");
@@ -94,8 +92,8 @@ class CarServiceTest {
                         .build();
 
 
-                when(carRepo.findById(id)).thenReturn(Optional.of(car));
-                when(carRepo.save(car)).thenReturn(car);
+                when(carRepository.findById(id)).thenReturn(Optional.of(car));
+                when(carRepository.save(car)).thenReturn(car);
 
 
                 Assertions.assertThat(carService.editCar(id, carDto)).isEqualTo(car);
@@ -108,13 +106,13 @@ class CarServiceTest {
                         .build();
 
 
-                when(carRepo.existsById(4L)).thenReturn(true);
-                doNothing().when(carRepo).deleteById(4L);
+                when(carRepository.existsById(4L)).thenReturn(true);
+                doNothing().when(carRepository).deleteById(4L);
 
 
                 carService.deleteCar(4L);
 
-                verify(carRepo, times(1)).deleteById(4L);
+                verify(carRepository, times(1)).deleteById(4L);
         }
 
         @Test
@@ -146,7 +144,7 @@ class CarServiceTest {
                 cars.add(car3);
 
 
-                when(carRepo.findCars(PageRequest.of(0, 10, Sort.by(Sort.Direction.ASC, "id"))))
+                when(carRepository.findCars(PageRequest.of(0, 10, Sort.by(Sort.Direction.ASC, "id"))))
                 .thenReturn(cars);
 
 
@@ -160,7 +158,7 @@ class CarServiceTest {
                 List<CarPackage> list = Arrays.asList(carPackage1, carPackage2);
 
 
-                when(carPackageRepo.findAll()).thenReturn(list);
+                when(carPackageRepository.findAll()).thenReturn(list);
 
 
                 Assertions.assertThat(carService.getCarPackages()).isEqualTo(list);
@@ -180,7 +178,7 @@ class CarServiceTest {
                         .build();
 
 
-                when(carPackageRepo.save(mapped)).thenReturn(mapped);
+                when(carPackageRepository.save(mapped)).thenReturn(mapped);
 
 
                 Assertions.assertThat(carService.saveCarPackage(luxury)).isEqualTo(mapped);
@@ -201,17 +199,17 @@ class CarServiceTest {
                         .build();
 
 
-                when(carPackageRepo.existsById(3L)).thenReturn(true);
-                when(carPackageRepo.existsById(4L)).thenReturn(true);
-                doNothing().when(carPackageRepo).deleteById(3L);
-                doNothing().when(carPackageRepo).deleteById(4L);
+                when(carPackageRepository.existsById(3L)).thenReturn(true);
+                when(carPackageRepository.existsById(4L)).thenReturn(true);
+                doNothing().when(carPackageRepository).deleteById(3L);
+                doNothing().when(carPackageRepository).deleteById(4L);
 
 
                 carService.deleteCarPackage(3L);
                 carService.deleteCarPackage(4L);
 
-                verify(carPackageRepo, times(1)).deleteById(3L);
-                verify(carPackageRepo, times(1)).deleteById(4L);
+                verify(carPackageRepository, times(1)).deleteById(3L);
+                verify(carPackageRepository, times(1)).deleteById(4L);
         }
 
         @Test
@@ -224,7 +222,7 @@ class CarServiceTest {
                         .packageName("Sporty")
                         .build();
 
-                when(carPackageRepo.findByPackageName("Sporty")).thenReturn(Optional.of(carPackage));
+                when(carPackageRepository.findByPackageName("Sporty")).thenReturn(Optional.of(carPackage));
 
                 assertThrows(ExistingEntityException.class, () -> carService.saveCarPackage(carPackageDto));
         }
@@ -274,7 +272,7 @@ class CarServiceTest {
                 cars.add(notAvailable2);
 
 
-                when(carRepo.findAvailableCars(PageRequest.of(0, 10, Sort.by(Sort.Direction.ASC, "id"))))
+                when(carRepository.findAvailableCars(PageRequest.of(0, 10, Sort.by(Sort.Direction.ASC, "id"))))
                         .thenReturn(cars.stream()
                                 .filter(Car::getIsAvailable).collect(Collectors.toList()));
 
