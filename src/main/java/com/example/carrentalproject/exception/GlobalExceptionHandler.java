@@ -14,8 +14,9 @@ import java.time.ZonedDateTime;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-        @ExceptionHandler(NoAccessKeyException.class)
-        public ResponseEntity<Object> handleNoAccessKeyException(NoAccessKeyException e, WebRequest request) {
+        @ExceptionHandler({NoAccessKeyException.class, InvalidPackageException.class, UnavailableCarException.class,
+                NoCreditCardException.class, ExistingOrderException.class, InsufficientFundsException.class})
+        public ResponseEntity<Object> handleCustomForbiddenException(Exception e, WebRequest request) {
 
                 ErrorDetails errorDetails = new ErrorDetails(e.getMessage(),
                         request.getDescription(false), ZonedDateTime.now());
@@ -24,88 +25,9 @@ public class GlobalExceptionHandler {
 
         }
 
-        @ExceptionHandler(InvalidPackageException.class)
-        public ResponseEntity<Object> handleInvalidPackageException(InvalidPackageException e, WebRequest request) {
-
-                ErrorDetails errorDetails = new ErrorDetails(e.getMessage(),
-                        request.getDescription(false), ZonedDateTime.now());
-
-                return new ResponseEntity<>(errorDetails, HttpStatus.FORBIDDEN);
-
-        }
-
-        @ExceptionHandler(UnavailableCarException.class)
-        public ResponseEntity<Object> handleUnavailableCarException(UnavailableCarException e, WebRequest request) {
-
-                ErrorDetails errorDetails = new ErrorDetails(e.getMessage(),
-                        request.getDescription(false), ZonedDateTime.now());
-
-                return new ResponseEntity<>(errorDetails, HttpStatus.FORBIDDEN);
-
-        }
-
-        @ExceptionHandler(NoCreditCardException.class)
-        public ResponseEntity<Object> handleNoCreditCardException(NoCreditCardException e, WebRequest request) {
-
-                ErrorDetails errorDetails = new ErrorDetails(e.getMessage(),
-                        request.getDescription(false), ZonedDateTime.now());
-
-                return new ResponseEntity<>(errorDetails, HttpStatus.FORBIDDEN);
-
-        }
-
-        @ExceptionHandler(ExistingOrderException.class)
-        public ResponseEntity<Object> handleExistingOrderException(ExistingOrderException e, WebRequest request) {
-
-                ErrorDetails errorDetails = new ErrorDetails(e.getMessage(),
-                        request.getDescription(false), ZonedDateTime.now());
-
-                return new ResponseEntity<>(errorDetails, HttpStatus.FORBIDDEN);
-
-        }
-
-        @ExceptionHandler(ExistingEntityException.class)
-        public ResponseEntity<Object> handleExistingEntityException(ExistingEntityException e, WebRequest request) {
-
-                ErrorDetails errorDetails = new ErrorDetails(e.getMessage(),
-                        request.getDescription(false), ZonedDateTime.now());
-
-                return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
-
-        }
-
-        @ExceptionHandler(InsufficientFundsException.class)
-        public ResponseEntity<Object> handleInsufficientFundsException(InsufficientFundsException e, WebRequest request) {
-
-                ErrorDetails errorDetails = new ErrorDetails(e.getMessage(),
-                        request.getDescription(false), ZonedDateTime.now());
-
-                return new ResponseEntity<>(errorDetails, HttpStatus.FORBIDDEN);
-
-        }
-
-        @ExceptionHandler(WeakPasswordException.class)
-        public ResponseEntity<Object> handleWeakPasswordException(WeakPasswordException e, WebRequest request) {
-
-                ErrorDetails errorDetails = new ErrorDetails(e.getMessage(),
-                        request.getDescription(false), ZonedDateTime.now());
-
-                return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
-
-        }
-
-        @ExceptionHandler(AssignedRoleException.class)
-        public ResponseEntity<Object> handleAssignedRoleException(AssignedRoleException e, WebRequest request) {
-
-                ErrorDetails errorDetails = new ErrorDetails(e.getMessage(),
-                        request.getDescription(false), ZonedDateTime.now());
-
-                return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
-
-        }
-
-        @ExceptionHandler(HttpMessageNotReadableException.class)
-        public ResponseEntity<Object> handleHttpMessageNotReadableException(HttpMessageNotReadableException e, WebRequest request) {
+        @ExceptionHandler({ExistingEntityException.class, WeakPasswordException.class,
+                AssignedRoleException.class})
+        public ResponseEntity<Object> handleCustomBadRequestException(Exception e, WebRequest request) {
 
                 ErrorDetails errorDetails = new ErrorDetails(e.getMessage(),
                         request.getDescription(false), ZonedDateTime.now());
@@ -124,18 +46,8 @@ public class GlobalExceptionHandler {
 
         }
 
-        @ExceptionHandler(EntityNotFoundException.class)
-        public ResponseEntity<Object> handleEntityNotFoundException(EntityNotFoundException e, WebRequest request) {
-
-                ErrorDetails errorDetails = new ErrorDetails(e.getMessage(),
-                        request.getDescription(false), ZonedDateTime.now());
-
-                return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
-
-        }
-
-        @ExceptionHandler(UsernameNotFoundException.class)
-        public ResponseEntity<Object> handleUsernameNotFoundException(UsernameNotFoundException e, WebRequest request) {
+        @ExceptionHandler({EntityNotFoundException.class, UsernameNotFoundException.class})
+        public ResponseEntity<Object> handleNotFoundException(EntityNotFoundException e, WebRequest request) {
 
                 ErrorDetails errorDetails = new ErrorDetails(e.getMessage(),
                         request.getDescription(false), ZonedDateTime.now());
