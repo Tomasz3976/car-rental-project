@@ -11,6 +11,7 @@ import com.example.carrentalproject.exception.ExistingEntityException;
 import com.example.carrentalproject.exception.NoCreditCardException;
 import com.example.carrentalproject.exception.WeakPasswordException;
 import com.example.carrentalproject.repo.UserRepository;
+import com.example.carrentalproject.utils.PasswordValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -28,9 +29,6 @@ public class RegistrationService {
         private final UserRepository userRepository;
         private final PasswordEncoder passwordEncoder;
         private final UserService userService;
-        private final CreditCardRepository creditCardRepository;
-        private final LoggedInUser loggedInUser;
-
 
         public void registerUser(UserDto userDto) {
 
@@ -50,36 +48,6 @@ public class RegistrationService {
                         user.setPassword(passwordEncoder.encode(user.getPassword()));
                         userRepository.save(user);
                         userService.addRoleToUser(user.getUsername(), "ROLE_USER");
-
-                }
-        }
-
-        public void addCreditCard(CreditCardDto creditCardDto) {
-
-                log.info("Adding credit card to user");
-                User user = loggedInUser.getUser();
-
-                if(user.getCreditCard() != null) throw new IllegalCallerException("You Already Have Credit Card!");
-                CreditCard card = creditCardRepository.save(mapToCreditCard(creditCardDto));
-                user.setCreditCard(card);
-                card.setUser(user);
-                userRepository.save(user);
-        }
-
-        public void moneyTransfer(Long moneyAmount) {
-
-                User user = loggedInUser.getUser();
-
-                if(user.getCreditCard() == null) {
-
-                        throw new NoCreditCardException("You Do Not Have Credit Card!");
-
-                } else {
-
-                        log.info("Transfer for the amount of {}", moneyAmount);
-                        CreditCard creditCard = user.getCreditCard();
-                        creditCard.setAccountBalance(creditCard.getAccountBalance() + moneyAmount);
-                        userRepository.save(user);
 
                 }
         }

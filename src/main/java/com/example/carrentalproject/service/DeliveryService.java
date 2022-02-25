@@ -30,7 +30,6 @@ public class DeliveryService {
         private final AccessKeyRepository accessKeyRepository;
         private final LoggedInUser loggedInUser;
 
-
         public Car pickUpTheCar(Long carId) {
 
                 Car car = carRepository.findById(carId)
