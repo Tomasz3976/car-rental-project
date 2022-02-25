@@ -22,18 +22,6 @@ public class CarRentalApplication {
 		SpringApplication.run(CarRentalApplication.class, args);
 	}
 
-	@Bean
-	public CommandLineRunner loadData(UserService userService, RoleRepository roleRepository) {
-		return (args) -> {
-
-			roleRepository.save(new Role(1L, "ROLE_USER", new ArrayList<>()));
-			userService.saveUser(new UserDto("Tomasz", "Nowak",
-				"tomeczek", "Pomidor124", "fenuefd@gmail.com", 2002));
-
-			userService.addRoleToUser("tomeczek", "ROLE_USER");
-
-		};
-
 	}
-}
+
 
