@@ -29,7 +29,10 @@ public class PaymentService {
                 log.info("Adding credit card to user");
                 User user = loggedInUser.getUser();
 
-                if(user.getCreditCard() != null) throw new IllegalCallerException("You Already Have Credit Card!");
+                if(user.getCreditCard() != null) {
+
+                        throw new IllegalCallerException("You Already Have Credit Card!");
+                }
                 CreditCard card = creditCardRepository.save(mapToCreditCard(creditCardDto));
                 user.setCreditCard(card);
                 card.setUser(user);

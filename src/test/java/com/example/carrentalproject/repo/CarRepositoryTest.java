@@ -30,16 +30,17 @@ class CarRepositoryTest {
         @Autowired
         private CarPackageRepository carPackageRepository;
 
+        @Autowired
+        private CarParametersRepository carParametersRepository;
+
         @BeforeEach
         void setUp() {
                 CarPackage sporty = new CarPackage(null, "Sporty", 300, new ArrayList<>());
-
                 carPackageRepository.save(sporty);
-
-                Car car = new Car(null, "RSA45362", "Audi", "S6", true, sporty,
-                        new CarParameters(null, FuelType.PETROL, GearBoxType.AUTOMATIC, 5, 5, true));
-                        sporty.getCars().add(car);
+                Car car = new Car(null, "RSA45362", "Audi", "S6", true, sporty, null);
+                CarParameters carParameters = new CarParameters(null, FuelType.PETROL, GearBoxType.AUTOMATIC, 5, 5, true, car);
                 carRepository.save(car);
+                sporty.getCars().add(car);
         }
 
         @AfterEach

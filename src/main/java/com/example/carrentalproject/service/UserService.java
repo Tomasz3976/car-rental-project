@@ -4,10 +4,12 @@ import com.example.carrentalproject.domain.CreditCard;
 import com.example.carrentalproject.domain.Role;
 import com.example.carrentalproject.domain.User;
 import com.example.carrentalproject.dto.CreditCardDto;
+import com.example.carrentalproject.dto.UserDto;
 import com.example.carrentalproject.mapper.UserDtoMapper;
+import com.example.carrentalproject.mapper.UserInDtoMapper;
 import com.example.carrentalproject.repo.CreditCardRepository;
 import com.example.carrentalproject.repo.RoleRepository;
-import com.example.carrentalproject.dto.UserDto;
+import com.example.carrentalproject.dto.UserInDto;
 import com.example.carrentalproject.exception.AssignedRoleException;
 import com.example.carrentalproject.exception.ExistingEntityException;
 import com.example.carrentalproject.exception.NoCreditCardException;
@@ -54,33 +56,36 @@ public class UserService implements UserDetailsService {
                 return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), authorities);
         }
 
-        public UserDto saveUser(UserDto userDto) {
-                if(userRepository.findByUsername(userDto.getUsername()).isPresent()) {
+        public UserInDto saveUser(UserInDto userInDto) {
+                if(userRepository.findByUsername(userInDto.getUsername()).isPresent()) {
 
                         throw new ExistingEntityException("User With Given Username Already Exists!");
                 }
-                log.info("Saving new user {} to the database", userDto.getUsername());
-                userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
-                userRepository.save(UserDtoMapper.mapToUser(userDto));
-                return userDto;
+                log.info("Saving new user {} to the database", userInDto.getUsername());
+                userInDto.setPassword(passwordEncoder.encode(userInDto.getPassword()));
+                userRepository.save(UserInDtoMapper.mapToUser(userInDto));
+                return userInDto;
         }
 
-        public User editUser(Long id, UserDto userDto) {
+        public User editUser(Long id, UserInDto userInDto) {
                 User userEdited = userRepository.findById(id)
                         .orElseThrow(() -> new UsernameNotFoundException("This User Does Not Exists!"));
                 log.info("Edition user with id {}", id);
-                userEdited.setFirstName(userDto.getFirstName());
-                userEdited.setLastName(userDto.getLastName());
-                userEdited.setUsername(userDto.getUsername());
-                userEdited.setPassword(passwordEncoder.encode(userDto.getPassword()));
-                userEdited.setEmail(userDto.getEmail());
-                userEdited.setPhone(userDto.getPhone());
+                userEdited.setFirstName(userInDto.getFirstName());
+                userEdited.setLastName(userInDto.getLastName());
+                userEdited.setUsername(userInDto.getUsername());
+                userEdited.setPassword(passwordEncoder.encode(userInDto.getPassword()));
+                userEdited.setEmail(userInDto.getEmail());
+                userEdited.setPhone(userInDto.getPhone());
                 return userRepository.save(userEdited);
         }
 
         public void deleteUser(Long id) {
                 log.info("Deleting user with id {}", id);
-                if(!userRepository.existsById(id)) throw new UsernameNotFoundException("This User Does Not Exists!");
+                if(!userRepository.existsById(id)) {
+
+                        throw new UsernameNotFoundException("This User Does Not Exists!");
+                }
                 userRepository.deleteById(id);
         }
 
@@ -137,13 +142,16 @@ public class UserService implements UserDetailsService {
                 log.info("Deleting credit card of user {}", username);
                 User user = userRepository.findByUsername(username)
                         .orElseThrow(() -> new UsernameNotFoundException("This User Does Not Exists!"));
-                if(user.getCreditCard() == null) throw new NoCreditCardException("This User Do Not Have Credit Card!");
+                if(user.getCreditCard() == null) {
+
+                        throw new NoCreditCardException("This User Do Not Have Credit Card!");
+                }
                 creditCardRepository.delete(user.getCreditCard());
         }
 
-        public List<User> getUsers() {
+        public List<UserDto> getUsers() {
                 log.info("Fetching all users");
-                return userRepository.findAll();
+                return UserDtoMapper.mapUserToUserDto(userRepository.findAll());
         }
 
 }

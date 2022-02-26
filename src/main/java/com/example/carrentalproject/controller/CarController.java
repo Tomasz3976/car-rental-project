@@ -2,7 +2,7 @@ package com.example.carrentalproject.controller;
 
 import com.example.carrentalproject.domain.Car;
 import com.example.carrentalproject.domain.CarPackage;
-import com.example.carrentalproject.domain.PlacedOrder;
+import com.example.carrentalproject.domain.CarParameters;
 import com.example.carrentalproject.dto.CarDto;
 import com.example.carrentalproject.dto.CarPackageDto;
 import com.example.carrentalproject.service.CarService;
@@ -46,13 +46,23 @@ public class CarController {
         }
 
         @PostMapping("/cars")
-        public Car saveCar(@RequestBody CarDto carDto, @RequestParam String packageName) {
-                return carService.saveCar(carDto, packageName);
+        public Car saveCar(@RequestBody CarDto carDto) {
+                return carService.saveCar(carDto);
         }
 
         @PutMapping("/cars/{id}")
         public Car editCar(@PathVariable Long id, @RequestBody CarDto carDto) {
                 return carService.editCar(id, carDto);
+        }
+
+        @PutMapping("/cars/{id}/parameters")
+        public Car setCarParameters(@PathVariable Long id, @RequestBody CarParameters carParameters) {
+                return carService.setCarParameters(id, carParameters);
+        }
+
+        @PutMapping("/cars/{id}/packages")
+        public Car setCarPackage(@PathVariable Long id, @RequestParam String packageName) {
+                return carService.setCarPackage(id, packageName);
         }
 
         @DeleteMapping("/cars/{id}")

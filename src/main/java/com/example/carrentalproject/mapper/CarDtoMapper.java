@@ -5,7 +5,7 @@ import com.example.carrentalproject.dto.CarDto;
 import org.springframework.stereotype.Service;
 
 @Service
-public class CarSaveDtoMapper {
+public class CarDtoMapper {
 
         public static Car mapToCar(CarDto carDto) {
 
@@ -14,7 +14,6 @@ public class CarSaveDtoMapper {
                         .brand(carDto.getBrand())
                         .model(carDto.getModel())
                         .isAvailable(carDto.getIsAvailable())
-                        .carParameters(carDto.getCarParameters())
                         .build();
 
         }

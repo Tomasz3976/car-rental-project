@@ -2,11 +2,15 @@ package com.example.carrentalproject.service;
 
 import com.example.carrentalproject.domain.Car;
 import com.example.carrentalproject.domain.CarPackage;
+import com.example.carrentalproject.domain.CarParameters;
 import com.example.carrentalproject.dto.CarDto;
 import com.example.carrentalproject.dto.CarPackageDto;
 import com.example.carrentalproject.repo.CarPackageRepository;
+import com.example.carrentalproject.repo.CarParametersRepository;
 import com.example.carrentalproject.repo.CarRepository;
 import com.example.carrentalproject.exception.ExistingEntityException;
+import com.example.carrentalproject.utils.PageValidator;
+import com.example.carrentalproject.utils.SortValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
@@ -18,7 +22,7 @@ import javax.persistence.EntityNotFoundException;
 import java.util.List;
 
 import static com.example.carrentalproject.mapper.CarPackageDtoMapper.mapToCarPackage;
-import static com.example.carrentalproject.mapper.CarSaveDtoMapper.mapToCar;
+import static com.example.carrentalproject.mapper.CarDtoMapper.mapToCar;
 
 @Service
 @RequiredArgsConstructor
@@ -29,11 +33,12 @@ public class CarService {
         public static final int DEFAULT_PAGE_SIZE = 10;
         private final CarRepository carRepository;
         private final CarPackageRepository carPackageRepository;
+        private final CarParametersRepository carParametersRepository;
 
         public List<Car> getAllCars(Integer page, Sort.Direction sort) {
                 log.info("Fetching all cars");
-                int pageNumber = page == null || page <= 0 ? 1 : page;
-                Sort.Direction sortDirection = sort != null ? sort : Sort.Direction.ASC;
+                int pageNumber = PageValidator.pageNumber(page);
+                Sort.Direction sortDirection = SortValidator.sortDirection(sort);
                 return carRepository.findCars(PageRequest.of(pageNumber - 1, DEFAULT_PAGE_SIZE, Sort.by(sortDirection, "id")));
         }
 
@@ -44,8 +49,8 @@ public class CarService {
 
         public List<Car> getAvailableCars(Integer page, Sort.Direction sort) {
                 log.info("Fetching available cars");
-                int pageNumber = page == null || page <= 0 ? 1 : page;
-                Sort.Direction sortDirection = sort != null ? sort : Sort.Direction.ASC;
+                int pageNumber = PageValidator.pageNumber(page);
+                Sort.Direction sortDirection = SortValidator.sortDirection(sort);
                 return carRepository.findAvailableCars(PageRequest.of(pageNumber - 1, DEFAULT_PAGE_SIZE, Sort.by(sortDirection, "id")));
         }
 
@@ -55,12 +60,9 @@ public class CarService {
                         .orElseThrow(() -> new EntityNotFoundException("Car With This ID Does Not Exists!"));
         }
 
-        public Car saveCar(CarDto carDto, String packageName) {
-                CarPackage carPackage = carPackageRepository.findByPackageName(packageName)
-                        .orElseThrow(() -> new EntityNotFoundException("This Package Does Not Exists!"));
+        public Car saveCar(CarDto carDto) {
                 log.info("Saving new car {} {} to the database", carDto.getBrand(), carDto.getModel());
                 Car car = mapToCar(carDto);
-                car.setCarPackage(carPackage);
                 return carRepository.save(car);
         }
 
@@ -72,13 +74,38 @@ public class CarService {
                 carEdited.setBrand(carDto.getBrand());
                 carEdited.setModel(carDto.getModel());
                 carEdited.setIsAvailable(carDto.getIsAvailable());
-                carEdited.setCarParameters(carDto.getCarParameters());
                 return carRepository.save(carEdited);
+        }
+
+        public Car setCarParameters(Long id, CarParameters carParameters) {
+                Car car = carRepository.findById(id)
+                        .orElseThrow(() -> new EntityNotFoundException("This Car Does Not Exists!"));
+                log.info("Setting parameters of car with id {}", id);
+                if(car.getCarParameters() != null) {
+
+                        carParametersRepository.delete(car.getCarParameters());
+                }
+                carParametersRepository.save(carParameters);
+                car.setCarParameters(carParameters);
+                return carRepository.save(car);
+        }
+
+        public Car setCarPackage(Long id, String packageName) {
+                Car car = carRepository.findById(id)
+                        .orElseThrow(() -> new EntityNotFoundException("This Car Does Not Exists!"));
+                CarPackage carPackage = carPackageRepository.findByPackageName(packageName)
+                        .orElseThrow(() -> new EntityNotFoundException("This Package Does Not Exists!"));
+                log.info("Setting package of car with id {}", id);
+                car.setCarPackage(carPackage);
+                return carRepository.save(car);
         }
 
         public void deleteCar(Long id) {
                 log.info("Deleting car with id {}", id);
-                if(!carRepository.existsById(id)) throw new EntityNotFoundException("This Car Does Not Exists!");
+                if(!carRepository.existsById(id)) {
+
+                        throw new EntityNotFoundException("This Car Does Not Exists!");
+                }
                 carRepository.deleteById(id);
         }
 
@@ -93,7 +120,10 @@ public class CarService {
 
         public void deleteCarPackage(Long id) {
                 log.info("Deleting car package with id {}", id);
-                if(!carPackageRepository.existsById(id)) throw new EntityNotFoundException("This Package Does Not Exists!");
+                if(!carPackageRepository.existsById(id)) {
+
+                        throw new EntityNotFoundException("This Package Does Not Exists!");
+                }
                 carPackageRepository.deleteById(id);
         }
 

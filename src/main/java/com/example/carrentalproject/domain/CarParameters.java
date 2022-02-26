@@ -15,6 +15,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -47,5 +48,9 @@ public class CarParameters {
 
         @Column(name = "is_air_conditioning_available", nullable = false)
         private Boolean isAirConditioningAvailable;
+
+        @JsonIgnore
+        @OneToOne(mappedBy = "carParameters")
+        private Car car;
 
 }

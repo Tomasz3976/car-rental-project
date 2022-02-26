@@ -43,10 +43,10 @@ public class Car {
         private Boolean isAvailable;
 
         @ManyToOne(fetch = FetchType.EAGER)
-        @JoinColumn(name = "car_package_id", referencedColumnName = "id", nullable = false)
+        @JoinColumn(name = "car_package_id", referencedColumnName = "id")
         private CarPackage carPackage;
 
-        @OneToOne(cascade = CascadeType.ALL)
+        @OneToOne(orphanRemoval = true)
         private CarParameters carParameters;
 
 }

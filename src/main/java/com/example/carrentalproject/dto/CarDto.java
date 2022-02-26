@@ -14,6 +14,5 @@ public class CarDto {
         private String brand;
         private String model;
         private Boolean isAvailable;
-        private CarParameters carParameters;
 
 }
