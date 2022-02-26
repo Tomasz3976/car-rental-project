@@ -5,7 +5,7 @@ import com.example.carrentalproject.dto.UserInDto;
 import com.example.carrentalproject.mapper.UserInDtoMapper;
 import com.example.carrentalproject.exception.ExistingEntityException;
 import com.example.carrentalproject.exception.WeakPasswordException;
-import com.example.carrentalproject.repo.UserRepository;
+import com.example.carrentalproject.repository.UserRepository;
 import com.example.carrentalproject.utils.PasswordValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -4,7 +4,7 @@ import com.example.carrentalproject.domain.User;
 import com.example.carrentalproject.dto.UserInDto;
 import com.example.carrentalproject.exception.ExistingEntityException;
 import com.example.carrentalproject.exception.WeakPasswordException;
-import com.example.carrentalproject.repo.UserRepository;
+import com.example.carrentalproject.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

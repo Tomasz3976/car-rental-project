@@ -1,4 +1,4 @@
-package com.example.carrentalproject.repo;
+package com.example.carrentalproject.repository;
 
 import com.example.carrentalproject.constant.FuelType;
 import com.example.carrentalproject.constant.GearBoxType;
