@@ -1,30 +1,20 @@
 package com.example.carrentalproject.mapper;
 
-import com.example.carrentalproject.domain.CreditCard;
 import com.example.carrentalproject.domain.User;
 import com.example.carrentalproject.dto.UserDto;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class UserDtoMapper {
 
-        public static final CreditCard CREDIT_CARD = null;
-
-        public static User mapToUser(UserDto userDto) {
-
-                return User.builder()
-                        .firstName(userDto.getFirstName())
-                        .lastName(userDto.getLastName())
-                        .username(userDto.getUsername())
-                        .password(userDto.getPassword())
-                        .email(userDto.getEmail())
-                        .phone(userDto.getPhone())
-                        .creditCard(CREDIT_CARD)
-                        .roles(new ArrayList<>())
-                        .build();
-
+        public static List<UserDto> mapUserToUserDto(List<User> users) {
+                return users.stream()
+                        .map(user -> new UserDto(user.getId(), user.getFirstName(),
+                                user.getLastName(), user.getUsername(), user.getPassword(),
+                                user.getEmail(), user.getPhone())).collect(Collectors.toList());
         }
 
 }

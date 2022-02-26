@@ -4,9 +4,10 @@ import com.example.carrentalproject.domain.CreditCard;
 import com.example.carrentalproject.domain.Role;
 import com.example.carrentalproject.domain.User;
 import com.example.carrentalproject.dto.CreditCardDto;
-import com.example.carrentalproject.dto.UserDto;
+import com.example.carrentalproject.dto.UserInDto;
 import com.example.carrentalproject.exception.AssignedRoleException;
 import com.example.carrentalproject.exception.ExistingEntityException;
+import com.example.carrentalproject.mapper.UserDtoMapper;
 import com.example.carrentalproject.repo.CreditCardRepository;
 import com.example.carrentalproject.repo.RoleRepository;
 import com.example.carrentalproject.repo.UserRepository;
@@ -51,7 +52,7 @@ class UserServiceTest {
 
         @Test
         void itShouldSaveUser() {
-                UserDto userDto = UserDto.builder()
+                UserInDto userInDto = UserInDto.builder()
                         .firstName("Sebastian")
                         .lastName("Alvarez")
                         .username("sebix")
@@ -74,17 +75,17 @@ class UserServiceTest {
                 when(userRepository.save(user)).thenReturn(user);
 
 
-                userService.saveUser(userDto);
+                userService.saveUser(userInDto);
 
-                assertThat(user.getFirstName()).isEqualTo(userDto.getFirstName());
-                assertThat(user.getEmail()).isEqualTo(userDto.getEmail());
+                assertThat(user.getFirstName()).isEqualTo(userInDto.getFirstName());
+                assertThat(user.getEmail()).isEqualTo(userInDto.getEmail());
         }
 
         @Test
         void itShouldCheckIfUserIsEdited() {
                 Long id = 2L;
 
-                UserDto userDto = UserDto.builder()
+                UserInDto userInDto = UserInDto.builder()
                         .username("Amigo")
                         .build();
 
@@ -97,7 +98,7 @@ class UserServiceTest {
                 when(userRepository.save(user)).thenReturn(user);
 
 
-                Assertions.assertThat(userService.editUser(id, userDto)).isEqualTo(user);
+                Assertions.assertThat(userService.editUser(id, userInDto)).isEqualTo(user);
         }
 
         @Test
@@ -239,7 +240,7 @@ class UserServiceTest {
 
         @Test
         void itShouldThrowExistingUserException() {
-                UserDto userDto = UserDto.builder()
+                UserInDto userInDto = UserInDto.builder()
                         .username("Flick")
                         .build();
 
@@ -251,7 +252,7 @@ class UserServiceTest {
                 when(userRepository.findByUsername("Flick")).thenReturn(Optional.of(user));
 
 
-                assertThrows(ExistingEntityException.class, () -> userService.saveUser(userDto));
+                assertThrows(ExistingEntityException.class, () -> userService.saveUser(userInDto));
         }
 
         @Test
@@ -328,7 +329,7 @@ class UserServiceTest {
                 when(userRepository.findAll()).thenReturn(users);
 
 
-                Assertions.assertThat(userService.getUsers()).isEqualTo(users);
+                Assertions.assertThat(userService.getUsers()).isEqualTo(UserDtoMapper.mapUserToUserDto(users));
         }
 
 }

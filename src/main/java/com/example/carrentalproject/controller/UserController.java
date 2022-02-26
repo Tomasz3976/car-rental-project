@@ -3,9 +3,8 @@ package com.example.carrentalproject.controller;
 import com.example.carrentalproject.domain.Role;
 import com.example.carrentalproject.domain.User;
 import com.example.carrentalproject.dto.CreditCardDto;
-import com.example.carrentalproject.dto.UserDisplayDto;
 import com.example.carrentalproject.dto.UserDto;
-import com.example.carrentalproject.mapper.UserDisplayDtoMapper;
+import com.example.carrentalproject.dto.UserInDto;
 import com.example.carrentalproject.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -26,18 +25,18 @@ public class UserController {
         private final UserService userService;
 
         @GetMapping("/users")
-        public List<UserDisplayDto> getUsers() {
-                return UserDisplayDtoMapper.mapUserToUserDisplayDto(userService.getUsers());
+        public List<UserDto> getUsers() {
+                return userService.getUsers();
         }
 
         @PostMapping("/users")
-        public UserDto saveUser(@RequestBody UserDto userDto) {
-                return userService.saveUser(userDto);
+        public UserInDto saveUser(@RequestBody UserInDto userInDto) {
+                return userService.saveUser(userInDto);
         }
 
         @PutMapping("/users/{id}")
-        public User editUser(@PathVariable Long id, @RequestBody UserDto userDto) {
-                return userService.editUser(id, userDto);
+        public User editUser(@PathVariable Long id, @RequestBody UserInDto userInDto) {
+                return userService.editUser(id, userInDto);
         }
 
         @DeleteMapping("/users/{id}")

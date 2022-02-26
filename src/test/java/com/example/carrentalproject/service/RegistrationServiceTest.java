@@ -1,7 +1,7 @@
 package com.example.carrentalproject.service;
 
 import com.example.carrentalproject.domain.User;
-import com.example.carrentalproject.dto.UserDto;
+import com.example.carrentalproject.dto.UserInDto;
 import com.example.carrentalproject.exception.ExistingEntityException;
 import com.example.carrentalproject.exception.WeakPasswordException;
 import com.example.carrentalproject.repo.UserRepository;
@@ -27,7 +27,7 @@ class RegistrationServiceTest {
 
         @Test
         void itShouldThrowExistingEntityException() {
-                UserDto userDto = UserDto.builder()
+                UserInDto userInDto = UserInDto.builder()
                         .username("GreenJohn78")
                         .build();
 
@@ -36,24 +36,24 @@ class RegistrationServiceTest {
                         .build();
 
 
-                when(userRepository.findByUsername(userDto.getUsername())).thenReturn(Optional.of(user));
+                when(userRepository.findByUsername(userInDto.getUsername())).thenReturn(Optional.of(user));
 
 
-                assertThrows(ExistingEntityException.class, () -> registrationService.registerUser(userDto));
+                assertThrows(ExistingEntityException.class, () -> registrationService.registerUser(userInDto));
         }
 
         @Test
         void itShouldThrowWeakPasswordException() {
-                UserDto userDto = UserDto.builder()
+                UserInDto userInDto = UserInDto.builder()
                         .username("JohnBDP685")
                         .password("johnapple56")
                         .build();
 
 
-                when(userRepository.findByUsername(userDto.getUsername())).thenReturn(Optional.empty());
+                when(userRepository.findByUsername(userInDto.getUsername())).thenReturn(Optional.empty());
 
 
-                assertThrows(WeakPasswordException.class, () -> registrationService.registerUser(userDto));
+                assertThrows(WeakPasswordException.class, () -> registrationService.registerUser(userInDto));
         }
 
 }

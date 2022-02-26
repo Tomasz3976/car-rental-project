@@ -53,12 +53,11 @@ public class User {
         private Integer phone;
 
         @JsonIgnore
-        @OneToOne(mappedBy = "user")
+        @OneToOne(mappedBy = "user", orphanRemoval = true)
         private CreditCard creditCard;
 
         @JsonIgnore
-        @Nullable
-        @OneToOne(mappedBy = "user")
+        @OneToOne(mappedBy = "user", orphanRemoval = true)
         private AccessKey accessKey;
 
         @ManyToMany(cascade = CascadeType.PERSIST)

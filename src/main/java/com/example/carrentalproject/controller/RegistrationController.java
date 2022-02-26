@@ -1,6 +1,6 @@
 package com.example.carrentalproject.controller;
 
-import com.example.carrentalproject.dto.UserDto;
+import com.example.carrentalproject.dto.UserInDto;
 import com.example.carrentalproject.service.RegistrationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,8 +14,8 @@ public class RegistrationController {
         private final RegistrationService registrationService;
 
         @PostMapping("/registration")
-        public void registerUser(@RequestBody UserDto userDto) {
-                registrationService.registerUser(userDto);
+        public void registerUser(@RequestBody UserInDto userInDto) {
+                registrationService.registerUser(userInDto);
         }
 
 }

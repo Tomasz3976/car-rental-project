@@ -3,10 +3,7 @@ package com.example.carrentalproject.service;
 import com.example.carrentalproject.domain.CreditCard;
 import com.example.carrentalproject.domain.User;
 import com.example.carrentalproject.dto.CreditCardDto;
-import com.example.carrentalproject.dto.UserDto;
-import com.example.carrentalproject.exception.ExistingEntityException;
 import com.example.carrentalproject.exception.NoCreditCardException;
-import com.example.carrentalproject.exception.WeakPasswordException;
 import com.example.carrentalproject.repo.CreditCardRepository;
 import com.example.carrentalproject.repo.UserRepository;
 import com.example.carrentalproject.security.LoggedInUser;
@@ -15,8 +12,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;

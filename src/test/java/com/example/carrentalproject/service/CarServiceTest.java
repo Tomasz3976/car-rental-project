@@ -1,11 +1,15 @@
 package com.example.carrentalproject.service;
 
+import com.example.carrentalproject.constant.FuelType;
+import com.example.carrentalproject.constant.GearBoxType;
 import com.example.carrentalproject.domain.Car;
 import com.example.carrentalproject.domain.CarPackage;
+import com.example.carrentalproject.domain.CarParameters;
 import com.example.carrentalproject.dto.CarDto;
 import com.example.carrentalproject.dto.CarPackageDto;
 import com.example.carrentalproject.exception.ExistingEntityException;
 import com.example.carrentalproject.repo.CarPackageRepository;
+import com.example.carrentalproject.repo.CarParametersRepository;
 import com.example.carrentalproject.repo.CarRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -22,6 +26,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static com.example.carrentalproject.constant.FuelType.DIESEL;
+import static com.example.carrentalproject.constant.GearBoxType.MANUAL;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -38,6 +44,9 @@ class CarServiceTest {
 
         @Mock
         CarPackageRepository carPackageRepository;
+
+        @Mock
+        CarParametersRepository carParametersRepository;
 
         @InjectMocks
         CarService carService;
@@ -57,22 +66,16 @@ class CarServiceTest {
                         .model("A4")
                         .build();
 
-                CarPackage luxury = CarPackage.builder()
-                        .packageName("Luxury")
-                        .build();
-
                 Car mapped = Car.builder()
                         .brand("Audi")
                         .model("A4")
-                        .carPackage(luxury)
                         .build();
 
 
-                when(carPackageRepository.findByPackageName("Luxury")).thenReturn(Optional.of(luxury));
                 when(carRepository.save(mapped)).thenReturn(mapped);
 
 
-                Car saved = carService.saveCar(carDto, "Luxury");
+                Car saved = carService.saveCar(carDto);
 
                 assertThat(carDto.getModel()).isEqualTo(saved.getModel());
                 assertThat(carDto.getBrand()).isEqualTo(saved.getBrand());
@@ -97,6 +100,67 @@ class CarServiceTest {
 
 
                 Assertions.assertThat(carService.editCar(id, carDto)).isEqualTo(car);
+        }
+
+        @Test
+        void itShouldSetCarParameters() {
+                Long id = 5L;
+
+                CarParameters carParameters = CarParameters.builder()
+                        .fuelType(DIESEL)
+                        .gearBoxType(MANUAL)
+                        .numberOfDoors(5)
+                        .numberOfSeats(5)
+                        .isAirConditioningAvailable(true)
+                        .build();
+
+                Car car = Car.builder()
+                        .id(5L)
+                        .registrationNr("WRT-60722")
+                        .brand("Renault")
+                        .model("Scenic")
+                        .isAvailable(true)
+                        .build();
+
+
+                when(carRepository.findById(id)).thenReturn(Optional.of(car));
+                when(carParametersRepository.save(carParameters)).thenReturn(carParameters);
+                when(carRepository.save(car)).thenReturn(car);
+
+                carService.setCarParameters(id, carParameters);
+
+
+                assertThat(car.getCarParameters()).isEqualTo(carParameters);
+        }
+
+        @Test
+        void itShouldSetCarPackage() {
+                Long id = 8L;
+
+                String packageName = "Sporty";
+
+                Car car = Car.builder()
+                        .id(5L)
+                        .registrationNr("MRT-05006")
+                        .brand("Ford")
+                        .model("Fiesta")
+                        .isAvailable(true)
+                        .build();
+
+                CarPackage carPackage = CarPackage.builder()
+                        .packageName("Sporty")
+                        .pricePerHour(300)
+                        .build();
+
+
+                when(carRepository.findById(id)).thenReturn(Optional.of(car));
+                when(carPackageRepository.findByPackageName(packageName)).thenReturn(Optional.of(carPackage));
+                when(carRepository.save(car)).thenReturn(car);
+
+                carService.setCarPackage(id, packageName);
+
+
+                assertThat(car.getCarPackage()).isEqualTo(carPackage);
         }
 
         @Test

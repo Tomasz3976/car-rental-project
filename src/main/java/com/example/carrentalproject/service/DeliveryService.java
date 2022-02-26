@@ -35,25 +35,18 @@ public class DeliveryService {
                 Car car = carRepository.findById(carId)
                         .orElseThrow(() -> new EntityNotFoundException("Car With This ID Does Not Exists!"));
                 User user = loggedInUser.getUser();
-
                 if(user.getAccessKey() == null) {
 
                         throw new NoAccessKeyException("You Do Not Have An Access Key!");
-
                 }
-
                 else if(!user.getAccessKey().getCarPackage().equals(car.getCarPackage().getPackageName())) {
 
                         throw new InvalidPackageException("You Cannot Pick Car From This Package!");
-
                 }
-
                 else if(!car.getIsAvailable()) {
 
                         throw new UnavailableCarException("This Car Is Not Available!");
-
                 } else {
-
 
                         accessKeyRepository.delete(user.getAccessKey());
                         car.setIsAvailable(false);
@@ -63,7 +56,6 @@ public class DeliveryService {
                         orderRepository.save(order);
 
                         log.info("You rented a car, have a nice trip!");
-
                 }
                 return car;
         }

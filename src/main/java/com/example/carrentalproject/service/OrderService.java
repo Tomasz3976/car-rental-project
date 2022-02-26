@@ -44,10 +44,14 @@ public class OrderService {
 
                 User user = loggedInUser.getUser();
 
-                if(user.getCreditCard() == null) throw new NoCreditCardException("You Do Not Have Credit Card!");
+                if(user.getCreditCard() == null) {
 
-                if(user.getAccessKey() != null) throw new ExistingOrderException("You Have Already Placed An Order!");
+                        throw new NoCreditCardException("You Do Not Have Credit Card!");
+                }
+                if(user.getAccessKey() != null) {
 
+                        throw new ExistingOrderException("You Have Already Placed An Order!");
+                }
                 Long money = user.getCreditCard().getAccountBalance();
                 CarPackage carPackageSearch = carPackageRepository.findByPackageName(carPackage)
                         .orElseThrow(() -> new EntityNotFoundException("This Package Does Not Exists!"));
@@ -58,7 +62,6 @@ public class OrderService {
                 if (money < (long) price * hours) {
 
                         throw new InsufficientFundsException("You Do Not Have Enough Money!");
-
                 } else {
 
                         user.getCreditCard().setAccountBalance(money - (long) price * hours);
