@@ -1,4 +1,4 @@
-package com.example.carrentalproject.repo;
+package com.example.carrentalproject.repository;
 
 import com.example.carrentalproject.domain.Car;
 import org.springframework.data.domain.Pageable;

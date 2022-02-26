@@ -1,16 +1,14 @@
 package com.example.carrentalproject.service;
 
-import com.example.carrentalproject.constant.FuelType;
-import com.example.carrentalproject.constant.GearBoxType;
 import com.example.carrentalproject.domain.Car;
 import com.example.carrentalproject.domain.CarPackage;
 import com.example.carrentalproject.domain.CarParameters;
 import com.example.carrentalproject.dto.CarDto;
 import com.example.carrentalproject.dto.CarPackageDto;
 import com.example.carrentalproject.exception.ExistingEntityException;
-import com.example.carrentalproject.repo.CarPackageRepository;
-import com.example.carrentalproject.repo.CarParametersRepository;
-import com.example.carrentalproject.repo.CarRepository;
+import com.example.carrentalproject.repository.CarPackageRepository;
+import com.example.carrentalproject.repository.CarParametersRepository;
+import com.example.carrentalproject.repository.CarRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

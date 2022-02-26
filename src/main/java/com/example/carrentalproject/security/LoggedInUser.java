@@ -1,7 +1,7 @@
 package com.example.carrentalproject.security;
 
 import com.example.carrentalproject.domain.User;
-import com.example.carrentalproject.repo.UserRepository;
+import com.example.carrentalproject.repository.UserRepository;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;

@@ -3,14 +3,13 @@ package com.example.carrentalproject.service;
 import com.example.carrentalproject.domain.AccessKey;
 import com.example.carrentalproject.domain.Car;
 import com.example.carrentalproject.domain.CarPackage;
-import com.example.carrentalproject.domain.PlacedOrder;
 import com.example.carrentalproject.domain.User;
 import com.example.carrentalproject.exception.InvalidPackageException;
 import com.example.carrentalproject.exception.NoAccessKeyException;
 import com.example.carrentalproject.exception.UnavailableCarException;
-import com.example.carrentalproject.repo.AccessKeyRepository;
-import com.example.carrentalproject.repo.CarRepository;
-import com.example.carrentalproject.repo.OrderRepository;
+import com.example.carrentalproject.repository.AccessKeyRepository;
+import com.example.carrentalproject.repository.CarRepository;
+import com.example.carrentalproject.repository.OrderRepository;
 import com.example.carrentalproject.security.LoggedInUser;
 
 import org.junit.jupiter.api.Test;
@@ -20,7 +19,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import javax.persistence.EntityNotFoundException;
-import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
