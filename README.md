@@ -52,4 +52,4 @@ spring.datasource.password=password
 
 ## Explore Rest APIs
 
-To explore swagger documentation, run the application and go to `http://localhost:8080/swagger-ui.html`
+To explore documentation, run the application and go to `http://localhost:8080/swagger-ui.html`
