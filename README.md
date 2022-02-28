@@ -27,17 +27,21 @@ For building and running the application you need:
 1. Install [MySQL](https://dev.mysql.com/downloads/installer/)
 2. Execute command `git clone https://github.com/Tomasz3976/car-rental-project.git`
 3. Execute command `cd car-rental-project`
-4. Configure datasource in *main/resources/application.properties*
+4. Configure datasource in *main/resources/application.yml*
 ```
-spring.datasource.url=jdbc:mysql://localhost:3306/carrentaldb
-spring.datasource.username=username
-spring.datasource.password=password
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/carrentaldb
+    username: username
+    password: password
 ```
-5. Configure datasource in *test/resources/application.properties*
+5. Configure datasource in *test/resources/application.yml*
 ```
-spring.datasource.url=jdbc:mysql://localhost:3306/carrentaltestdb
-spring.datasource.username=username
-spring.datasource.password=password
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/carrentaltestdb
+    username: username
+    password: password
 ```
 6. Execute command `mvn clean install`
 7. Execute command `mvn spring-boot:run`
