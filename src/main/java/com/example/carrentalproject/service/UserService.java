@@ -149,7 +149,7 @@ public class UserService implements UserDetailsService {
                 creditCardRepository.delete(user.getCreditCard());
         }
 
-        public List<UserDto> getUsers() {
+        public List<UserDto> getAllUsers() {
                 log.info("Fetching all users");
                 return UserDtoMapper.mapUserToUserDto(userRepository.findAll());
         }

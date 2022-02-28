@@ -329,7 +329,7 @@ class UserServiceTest {
                 when(userRepository.findAll()).thenReturn(users);
 
 
-                Assertions.assertThat(userService.getUsers()).isEqualTo(UserDtoMapper.mapUserToUserDto(users));
+                Assertions.assertThat(userService.getAllUsers()).isEqualTo(UserDtoMapper.mapUserToUserDto(users));
         }
 
 }
