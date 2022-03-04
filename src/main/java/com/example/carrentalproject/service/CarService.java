@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.Collection;
 import java.util.List;
 
 import static com.example.carrentalproject.mapper.CarPackageDtoMapper.mapToCarPackage;
@@ -124,7 +125,12 @@ public class CarService {
 
                         throw new EntityNotFoundException("This Package Does Not Exists!");
                 }
-                carPackageRepository.deleteById(id);
+                CarPackage carPackage = carPackageRepository.getById(id);
+                Collection<Car> cars = carPackage.getCars();
+                for (Car car : cars) {
+                        car.setCarPackage(null);
+                }
+                carPackageRepository.delete(carPackage);
         }
 
 }

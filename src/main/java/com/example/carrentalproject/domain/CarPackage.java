@@ -6,10 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -37,7 +35,7 @@ public class CarPackage {
         private Integer pricePerHour;
 
         @JsonIgnore
-        @OneToMany(fetch = FetchType.LAZY, mappedBy = "carPackage", cascade = CascadeType.ALL)
+        @OneToMany(mappedBy = "carPackage")
         private Collection<Car> cars;
 
 }
