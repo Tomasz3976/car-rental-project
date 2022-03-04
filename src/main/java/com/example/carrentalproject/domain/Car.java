@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -42,7 +41,7 @@ public class Car {
         @Column(name = "is_available", nullable = false)
         private Boolean isAvailable;
 
-        @ManyToOne(fetch = FetchType.EAGER)
+        @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
         @JoinColumn(name = "car_package_id", referencedColumnName = "id")
         private CarPackage carPackage;
 

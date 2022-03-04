@@ -252,26 +252,30 @@ class CarServiceTest {
                         .id(3L)
                         .packageName("Ordinary")
                         .pricePerHour(100)
+                        .cars(new ArrayList<>())
                         .build();
 
                 CarPackage awesome = CarPackage.builder()
                         .id(4L)
                         .packageName("Awesome")
                         .pricePerHour(800)
+                        .cars(new ArrayList<>())
                         .build();
 
 
                 when(carPackageRepository.existsById(3L)).thenReturn(true);
                 when(carPackageRepository.existsById(4L)).thenReturn(true);
-                doNothing().when(carPackageRepository).deleteById(3L);
-                doNothing().when(carPackageRepository).deleteById(4L);
+                when(carPackageRepository.getById(3L)).thenReturn(ordinary);
+                when(carPackageRepository.getById(4L)).thenReturn(awesome);
+                doNothing().when(carPackageRepository).delete(ordinary);
+                doNothing().when(carPackageRepository).delete(awesome);
 
 
                 carService.deleteCarPackage(3L);
                 carService.deleteCarPackage(4L);
 
-                verify(carPackageRepository, times(1)).deleteById(3L);
-                verify(carPackageRepository, times(1)).deleteById(4L);
+                verify(carPackageRepository, times(1)).delete(ordinary);
+                verify(carPackageRepository, times(1)).delete(awesome);
         }
 
         @Test
