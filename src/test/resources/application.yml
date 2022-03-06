@@ -1,8 +1,8 @@
 spring:
   datasource:
     url: jdbc:mysql://localhost:3306/carrentaltestdb
-    username: username
-    password: password
+    username: root
+    password: Dolphin880
   jpa:
     hibernate:
       ddl-auto: create
