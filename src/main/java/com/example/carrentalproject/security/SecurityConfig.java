@@ -68,7 +68,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         .antMatchers(HttpMethod.GET, "/cars/**").hasAnyAuthority("ROLE_USER")
                         .antMatchers(HttpMethod.GET, "/orders").hasAnyAuthority("ROLE_MANAGER")
                         .antMatchers(HttpMethod.POST, "/orders").hasAnyAuthority("ROLE_USER")
-                        .antMatchers( "/registration/**", "/payment/**", "/delivery/**").hasAnyAuthority("ROLE_USER")
+                        .antMatchers( "/payment/**", "/delivery/**").hasAnyAuthority("ROLE_USER")
+                        .antMatchers("/registration/**").permitAll()
                         .anyRequest().authenticated()
                         .and().logout().logoutSuccessUrl("/login");
                 http.addFilter(new CustomAuthenticationFilter(authenticationManagerBean(), expirationTime, secretKey));
